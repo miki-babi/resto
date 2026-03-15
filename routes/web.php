@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\StaffMenuItemOrderController;
 use App\Models\Feedback;
 use App\Models\FeedbackLink;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +15,25 @@ Route::get('/', function () {
 Route::get('/menu', function () {
     return view('pages.landing.menu');
 })->name('menu');
+
+Route::get('/login', function () {
+    return redirect('/owner/login');
+})->name('login');
+
+Route::get('/order', [OrderController::class, 'index'])->name('order.index');
+Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+Route::get('/order/{publicToken}', [OrderController::class, 'show'])->name('order.show');
+Route::get('/order/{publicToken}/poll', [OrderController::class, 'poll'])->name('order.poll');
+
+Route::middleware('auth')->prefix('staff')->group(function () {
+    Route::get('/', [StaffController::class, 'index'])->name('staff.index');
+    Route::get('/pickup-locations/{pickupLocation}/command', [StaffController::class, 'command'])->name('staff.command');
+    Route::get('/pickup-locations/{pickupLocation}/command/poll', [StaffController::class, 'poll'])->name('staff.command.poll');
+
+    Route::post('/menu-item-orders/{order}/accept', [StaffMenuItemOrderController::class, 'accept'])->name('staff.orders.accept');
+    Route::post('/menu-item-orders/{order}/ready', [StaffMenuItemOrderController::class, 'ready'])->name('staff.orders.ready');
+    Route::post('/menu-item-orders/{order}/picked-up', [StaffMenuItemOrderController::class, 'pickedUp'])->name('staff.orders.picked_up');
+});
 
 
 
@@ -87,4 +109,3 @@ Route::get('/{page}', function ($page) {
 Route::get('/{page}/{slug}', function ($page , $slug ) {
     return view('pages.show');
 })->name('page.slug');
-

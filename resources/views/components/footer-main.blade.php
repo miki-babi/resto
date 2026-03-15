@@ -1,4 +1,4 @@
-@blaze(compile: true)
+{{-- @blaze(compile: true)
 
 <footer class="bg-metro-dark pt-20 pb-10">
         <div class="container mx-auto px-4 max-w-7xl">
@@ -54,4 +54,59 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer> --}}
+
+
+
+
+@props([
+    'columns' => [], 
+    'legalLinks' => [], 
+    'socials' => [], 
+    'copyright' => 'All rights reserved.'
+])
+
+<footer class="bg-metro-dark pt-20 pb-10">
+    <div class="container mx-auto px-4 max-w-7xl">
+        {{-- Main Navigation Grid --}}
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10 mb-16 mx-auto">
+            @foreach($columns as $title => $links)
+                <div>
+                    <h4 class="font-bold mb-4 uppercase text-xs tracking-widest text-gray-400">
+                        {{ $title }}
+                    </h4>
+                    <ul class="space-y-2 text-sm text-white">
+                        @foreach($links as $label => $url)
+                            <li>
+                                <a class="hover:text-metro-red transition-colors" href="{{ $url }}">
+                                    {{ $label }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endforeach
+        </div>
+
+        {{-- Bottom Bar --}}
+        <div class="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-white gap-4">
+            <div class="flex gap-4">
+                @foreach($legalLinks as $label => $url)
+                    <a class="hover:underline" href="{{ $url }}">{{ $label }}</a>
+                @endforeach
+            </div>
+
+            <div>© {{ date('Y') }} {{ $copyright }}</div>
+
+            <div class="flex gap-4 items-center">
+                @foreach($socials as $platform => $data)
+                    <a class="hover:text-metro-red transition-all" href="{{ $data['url'] }}" aria-label="{{ $platform }}">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="{{ $data['icon'] }}"></path>
+                        </svg>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</footer>
