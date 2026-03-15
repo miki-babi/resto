@@ -1,0 +1,32 @@
+@import 'tailwindcss';
+
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/container-queries";
+
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+[x-cloak] { display: none !important; }
+
+@theme {
+    /* Custom Colors */
+    --color-metro-red: #c78f69;
+    --color-metro-dark: #6c472d;
+    --color-metroGrey: #c78f69;
+
+    /* Custom Fonts */
+    --font-serif: "Playfair Display", serif;
+    --font-sans: "Inter", "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none
+}

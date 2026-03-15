@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    
+    {{-- Dynamic Title --}}
+    <title>{{ $title ?? 'Mera Coffee | Best Coffee Shop in Bisrate Gebriel' }}</title>
+
+    {{-- SEO Stacks: This allows each page to have its own description/og tags --}}
+    @stack('meta')
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+ <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    {{-- Alpine.js is required for your Gallery and Tooltips --}}
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body class="font-sans text-metroDark bg-white antialiased">
+    
+    <header class="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+        @php
+    $navLinks = [
+        'Menu' => '/menu',
+        'Catering' => '/catering',
+
+        'Our Story' => [
+            'Our Heritage' => '/history',
+            'The Roastery' => '/roasting',
+            'Sustainability' => '/impact',
+        ],
+    ];
+
+    $navCtas = [
+        [
+            'text' => 'Get Directions',
+            'url' => '/order',
+            'class' => 'bg-metro-dark text-white hover:bg-red-700 font-serif' // Primary Color
+        ],
+        [
+            'text' => 'Order Online',
+            'url' => 'https://maps.google.com',
+            'class' => 'bg-metro-red text-white hover:bg-black font-serif' // Secondary Color
+        ],
+    ];
+@endphp
+
+<x-nav-main 
+    :links="$navLinks" 
+    :ctas="$navCtas" 
+    logo="/img/logo.png" 
+/>
+    </header>
+
+    {{-- This is where the specific page content (Home, Menu, etc.) goes --}}
+    <main>
+        {{ $slot }}
+    </main>
+
+    <x-footer-main />
+
+    @stack('scripts')
+</body>
+</html>
