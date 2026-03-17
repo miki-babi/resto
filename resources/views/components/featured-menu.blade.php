@@ -71,7 +71,7 @@
     next() { this.activeImage = (this.activeImage + 1) % this.item.images.length },
     prev() { this.activeImage = (this.activeImage - 1 + this.item.images.length) % this.item.images.length }
 }" 
-@open-menu-modal.window="item = $event.detail; isOpen = true; activeImage = 0"
+@open-menu-modal="item = $event.detail; isOpen = true; activeImage = 0"
 @keydown.escape.window="isOpen = false" 
 class="mb-16">
 
