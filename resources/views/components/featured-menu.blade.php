@@ -76,7 +76,7 @@
 class="mb-16">
 
     {{-- Section Header --}}
-    <div class="flex items-center justify-between mb-8 border-l-4 border-red-600 pl-4">
+    <div class="flex items-center justify-between mb-4 border-l-4 border-red-600 pl-4">
         <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white  tracking-tight">
             {{ $title }}
         </h2>
