@@ -17,20 +17,23 @@
     {{-- 3. Top Picks --}}
     <section class="py-6 overflow-hidden">
         <div class="container mx-auto px-4 max-w-7xl">
-            
-            @php
-    $pizzas = [
-        [
-            'title' => 'Cheese Pizza (14")',
-            'price' => '$14.99',
-            'description' => 'A delicious classic with gooey mozzarella.',
-            'images' => ['https://lh3.googleusercontent.com/aida-public/AB6AXuCFLCo_kyxeWIe3N_tOQIXRNnwPe7nWUb-3XzjWdg-FCI56NDbDAfeLlbUfOv4-NHvbcfL8cL6ozIjJBqa6C3c4O6x_EHzPDnkQEHBRG3uVQBayXK3vb9_Gm8aHIg3eiiics9DznmtCjA-ee56BjW4AGKkfWbmey8VpVCKdkUGHTcjwCGCxrHCf4Jlrtn1tDIEv83tKOD1KOYKqDfNEvO9p1gY7jor2ssThyoeTrn1YALfckz9_0HYBcUi4S0xZf6mQMT8Wg4Q9vyY', '/img/pizza1-alt.jpg']
-        ],
-        // ... more items
-    ];
-@endphp
 
-<x-featured-menu title="Popular orders" :items="$pizzas" />
+            @php
+                $pizzas = [
+                    [
+                        'title' => 'Cheese Pizza (14")',
+                        'price' => '$14.99',
+                        'description' => 'A delicious classic with gooey mozzarella.',
+                        'images' => [
+                            'https://lh3.googleusercontent.com/aida-public/AB6AXuCFLCo_kyxeWIe3N_tOQIXRNnwPe7nWUb-3XzjWdg-FCI56NDbDAfeLlbUfOv4-NHvbcfL8cL6ozIjJBqa6C3c4O6x_EHzPDnkQEHBRG3uVQBayXK3vb9_Gm8aHIg3eiiics9DznmtCjA-ee56BjW4AGKkfWbmey8VpVCKdkUGHTcjwCGCxrHCf4Jlrtn1tDIEv83tKOD1KOYKqDfNEvO9p1gY7jor2ssThyoeTrn1YALfckz9_0HYBcUi4S0xZf6mQMT8Wg4Q9vyY',
+                            '/img/pizza1-alt.jpg',
+                        ],
+                    ],
+                    // ... more items
+                ];
+            @endphp
+
+            <x-featured-menu title="Popular orders" :items="$pizzas" />
         </div>
     </section>
 
@@ -79,30 +82,31 @@
         buttonText="Request Catering" :buttonUrl="'/menu2.html'" />
 
 
-   <x-testimonials 
-    :testimonials="[
+    <x-testimonials :testimonials="[
         [
             'name' => 'Jerry R.',
             'stars' => 5,
             'avatar' => 'https://i.pravatar.cc/150?u=jerry',
-            'content' => 'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.'
+            'content' =>
+                'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.',
         ],
         [
             'name' => 'Jerry R.',
             'stars' => 5,
             'avatar' => 'https://i.pravatar.cc/150?u=jerry',
-            'content' => 'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.'
+            'content' =>
+                'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.',
         ],
         [
             'name' => 'Jerry R.',
             'stars' => 5,
             'avatar' => 'https://i.pravatar.cc/150?u=jerry',
-            'content' => 'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.'
+            'content' =>
+                'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.',
         ],
-        
+    
         // ... add more reviews here
-    ]"
-/>
+    ]" />
 
 
 
@@ -136,22 +140,18 @@
         buttonText="Read Our Full Story" 
         buttonUrl="/about" />
     </x-section-main> --}}
-<x-banner-child
-            image="https://mattengas.com/pluto-images/funnel/images/05923b92-49f8-48a8-a6d1-7e2e8442625a?w=560&h=560&fit=cover"
-            title="Mera's Story" signature="The Mera Coffee Team"
-            content="We’re Matt and Enga—the pizza-loving duo behind Mattenga’s!  What started as a simple dream is now multiple locations across SAN ANTONIO. /n No shortcuts. No gimmicks. Just real ingredients and unforgettable flavors.Thanks for sharing your pizza cravings with us! Let’s eat! 🍕"
-            buttonText="Visit Us Today" 
-            buttonUrl="/locations" 
-            />
+    <x-banner-child
+        image="https://mattengas.com/pluto-images/funnel/images/05923b92-49f8-48a8-a6d1-7e2e8442625a?w=560&h=560&fit=cover"
+        title="Mera's Story" signature="The Mera Coffee Team"
+        content="We’re Matt and Enga—the pizza-loving duo behind Mattenga’s!  What started as a simple dream is now multiple locations across SAN ANTONIO. /n No shortcuts. No gimmicks. Just real ingredients and unforgettable flavors.Thanks for sharing your pizza cravings with us! Let’s eat! 🍕"
+        buttonText="Visit Us Today" buttonUrl="/locations" />
     <x-banner-main backgroundImage="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg"
         subtitle="Our Craft">
         <x-banner-child
             image="https://mattengas.com/pluto-images/funnel/images/05923b92-49f8-48a8-a6d1-7e2e8442625a?w=560&h=560&fit=cover"
             title="Mera's Story" signature="The Mera Coffee Team"
             content="We’re Matt and Enga—the pizza-loving duo behind Mattenga’s!  What started as a simple dream is now multiple locations across SAN ANTONIO. /n No shortcuts. No gimmicks. Just real ingredients and unforgettable flavors.Thanks for sharing your pizza cravings with us! Let’s eat! 🍕"
-            buttonText="Visit Us Today" 
-            buttonUrl="/locations" 
-            />
+            buttonText="Visit Us Today" buttonUrl="/locations" />
     </x-banner-main>
 
 

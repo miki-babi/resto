@@ -73,7 +73,7 @@
 }" 
 @open-menu-modal="item = $event.detail; isOpen = true; activeImage = 0"
 @keydown.escape.window="isOpen = false" 
-class="mb-16">
+class="mb-2">
 
     {{-- Section Header --}}
     <div class="flex items-center justify-between mb-4 border-l-4 border-red-600 pl-4">
