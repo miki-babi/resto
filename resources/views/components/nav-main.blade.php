@@ -1,6 +1,5 @@
 @props([
-    'logo' =>
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuCVdcILOZsUkPUSb0rfkVxML6tVOWvrYEGILcFJfE9OBzOqy4Zg4xBhCIAFRdtpRPjsPjOEM2W2eyZ0lTHvbSKhb_lurp3JphRbZ5y9E4RyfK7HottcXImI_ZB_S_PjqBUiJjBXq5jtSgoMgBbmQ86HlLVz7NoTXGVD86wCQ25a9W-jjJ8hp3aHqYVUVxmAnHV8rEc5UknHfWpypT6ro72otWPf5zxlpZb2CaUTvkkmWBT2ZoyaCavbvR6iHyGuEvpJlyVgh_mDD6s',
+    'logo' ,
     'links' => [],
     'ctas' => [],
 ])
@@ -12,7 +11,7 @@
         {{-- Logo --}}
         <div class="flex-shrink-0">
             <a href="/">
-                <img alt="Logo" class="h-10 w-auto md:h-12 object-contain" src="{{ $logo }}" />
+                <img alt="Logo" class="h-10 w-auto md:h-12 object-cover rounded-full" src="{{ $logo }}" />
             </a>
         </div>
 
@@ -65,7 +64,7 @@
         <div class="flex items-center space-x-4 lg:hidden">
             <div class="">
                 <a href="/menu"
-                    class="bg-metro-red border border-gray-200 px-5 py-2 rounded-xl shadow-sm text-sm font-bold text-white">
+                    class="bg-metro-grey border border-gray-200 px-5 py-2 rounded-md shadow-sm text-sm font-bold text-black">
                     Menu
                 </a>
             </div>

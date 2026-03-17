@@ -17,12 +17,20 @@
     {{-- 3. Top Picks --}}
     <section class="py-16 overflow-hidden">
         <div class="container mx-auto px-4 max-w-7xl">
-            <div class="flex justify-between items-end mb-8">
-                <h2 class="font-serif text-3xl">Top picks</h2>
-                <a class="text-metro-red font-serif font-semibold hover:underline" href="{{ route('menu') }}">View Menu
-                    ›</a>
-            </div>
-            <x-featured-menu />
+            
+            @php
+    $pizzas = [
+        [
+            'title' => 'Cheese Pizza (14")',
+            'price' => '$14.99',
+            'description' => 'A delicious classic with gooey mozzarella.',
+            'images' => ['https://lh3.googleusercontent.com/aida-public/AB6AXuCFLCo_kyxeWIe3N_tOQIXRNnwPe7nWUb-3XzjWdg-FCI56NDbDAfeLlbUfOv4-NHvbcfL8cL6ozIjJBqa6C3c4O6x_EHzPDnkQEHBRG3uVQBayXK3vb9_Gm8aHIg3eiiics9DznmtCjA-ee56BjW4AGKkfWbmey8VpVCKdkUGHTcjwCGCxrHCf4Jlrtn1tDIEv83tKOD1KOYKqDfNEvO9p1gY7jor2ssThyoeTrn1YALfckz9_0HYBcUi4S0xZf6mQMT8Wg4Q9vyY', '/img/pizza1-alt.jpg']
+        ],
+        // ... more items
+    ];
+@endphp
+
+<x-featured-menu title="Popular orders" :items="$pizzas" />
         </div>
     </section>
 
@@ -69,7 +77,35 @@
         description="At Metro Pizza, we honor the great traditions of America's landmark Pizzerias. Our dough is made fresh each day from the finest wheat."
         image="https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok"
         buttonText="Request Catering" :buttonUrl="'/menu2.html'" />
-    <x-testimonials />
+
+
+   <x-testimonials 
+    :testimonials="[
+        [
+            'name' => 'Jerry R.',
+            'stars' => 5,
+            'avatar' => 'https://i.pravatar.cc/150?u=jerry',
+            'content' => 'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.'
+        ],
+        [
+            'name' => 'Jerry R.',
+            'stars' => 5,
+            'avatar' => 'https://i.pravatar.cc/150?u=jerry',
+            'content' => 'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.'
+        ],
+        [
+            'name' => 'Jerry R.',
+            'stars' => 5,
+            'avatar' => 'https://i.pravatar.cc/150?u=jerry',
+            'content' => 'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.'
+        ],
+        
+        // ... add more reviews here
+    ]"
+/>
+
+
+
     @php
         $meraFaqs = [
             [

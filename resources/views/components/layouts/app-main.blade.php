@@ -55,7 +55,7 @@
 <x-nav-main 
     :links="$navLinks" 
     :ctas="$navCtas" 
-    logo="/img/logo.png" 
+    logo="https://lh3.googleusercontent.com/aida-public/AB6AXuCVdcILOZsUkPUSb0rfkVxML6tVOWvrYEGILcFJfE9OBzOqy4Zg4xBhCIAFRdtpRPjsPjOEM2W2eyZ0lTHvbSKhb_lurp3JphRbZ5y9E4RyfK7HottcXImI_ZB_S_PjqBUiJjBXq5jtSgoMgBbmQ86HlLVz7NoTXGVD86wCQ25a9W-jjJ8hp3aHqYVUVxmAnHV8rEc5UknHfWpypT6ro72otWPf5zxlpZb2CaUTvkkmWBT2ZoyaCavbvR6iHyGuEvpJlyVgh_mDD6s"
 />
     </header>
 

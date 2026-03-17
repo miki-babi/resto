@@ -1,4 +1,4 @@
-@blaze(compile: true)
+{{-- @blaze(compile: true)
 
 <section class="py-20 px-4">
     <div class="container mx-auto max-w-7xl bg-[#eeeeee] py-16 px-8 rounded-[3rem]">
@@ -56,6 +56,61 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+</section> --}}
+
+@props([
+    'title' => 'What our guests are saying',
+    'testimonials' => []
+])
+
+<section class="py-20 px-4">
+    <div class="container mx-auto max-w-7xl bg-[#eeeeee] py-16 px-8 rounded-[3rem]">
+        
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+                {{ $title }}
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            @foreach($testimonials as $item)
+                <div 
+                    x-data="{ expanded: false }" 
+                    class="bg-white p-10 rounded-[2rem] shadow-sm flex flex-col justify-between min-h-[350px]"
+                >
+                    <div>
+                        <div class="text-black text-xl mb-6">
+                            {{ str_repeat('★', $item['stars'] ?? 5) }}
+                        </div>
+                        
+                        {{-- The Magic: Line Clamp 4 --}}
+                        <p 
+                            :class="expanded ? '' : 'line-clamp-4'"
+                            class="text-gray-800 text-base leading-relaxed mb-2 transition-all duration-300"
+                        >
+                            {{ $item['content'] }}
+                        </p>
+
+                        <button 
+                            @click="expanded = !expanded"
+                            class="text-gray-500 text-sm underline hover:text-black transition cursor-pointer"
+                        >
+                            <span x-text="expanded ? 'See less' : 'See more'"></span>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 mt-8">
+                        <img 
+                            src="{{ $item['avatar'] }}" 
+                            alt="{{ $item['name'] }}" 
+                            class="w-12 h-12 rounded-full object-cover shadow-sm" 
+                        />
+                        <p class="font-semibold text-gray-700">{{ $item['name'] }}</p>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 </section>
