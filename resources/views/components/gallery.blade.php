@@ -56,20 +56,20 @@
                 </button>
 
                 {{-- Prev Button --}}
-                <button @click.stop="prev()" 
+                {{-- <button @click.stop="prev()" 
                         class="absolute left-2 md:left-4 z-[1010] bg-white text-black p-2 md:p-3 rounded-full shadow-lg hover:scale-110 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
                     </svg>
-                </button>
+                </button> --}}
 
                 {{-- Next Button --}}
-                <button @click.stop="next()" 
+                {{-- <button @click.stop="next()" 
                         class="absolute right-2 md:right-4 z-[1010] bg-white text-black p-2 md:p-3 rounded-full shadow-lg hover:scale-110 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
                     </svg>
-                </button>
+                </button> --}}
 
                 {{-- The Image --}}
                 <img :src="images[currentIndex].src" 
