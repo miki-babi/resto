@@ -15,7 +15,7 @@
 @keydown.right.window="if(open) next()"
 @keydown.left.window="if(open) prev()">
 
-    <section {{ $attributes->merge(['class' => 'py-16 px-4 bg-white ']) }}>
+    <section {{ $attributes->merge(['class' => 'py-6 px-4 bg-white ']) }}>
         <div class="container mx-auto max-w-7xl">
             {{-- Header --}}
             <div class="mb-10 px-2">
