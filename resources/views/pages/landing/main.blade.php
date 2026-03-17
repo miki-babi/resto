@@ -15,7 +15,7 @@
         primary-button-url="https://maps.google.com" secondary-button-text="View Menu" secondary-button-url="/menu" />
 
     {{-- 3. Top Picks --}}
-    <section class="py-16 overflow-hidden">
+    <section class="py-6 overflow-hidden">
         <div class="container mx-auto px-4 max-w-7xl">
             
             @php
