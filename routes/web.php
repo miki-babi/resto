@@ -6,6 +6,12 @@ use App\Models\FeedbackLink;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Http\Controllers\LandingController;
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/storage', function () {
+    Artisan::call('storage:link');
+    return redirect()->back();
+})->name('storage');
 
 Route::get('/', [LandingController::class, 'home'])->name('home');
 Route::get('/menu', [LandingController::class, 'menu'])->name('menu');
@@ -81,6 +87,6 @@ Route::post('/feedback/{id}', function (Request $request, $id) {
 Route::get('/{page}', function ($page) {
     return view('pages.show');
 })->name('page');
-Route::get('/{page}/{slug}', function ($page , $slug ) {
+Route::get('/{page}/{slug}', function ($page, $slug) {
     return view('pages.show');
 })->name('page.slug');
