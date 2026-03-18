@@ -10,7 +10,7 @@
     'secondaryButtonUrl' => '/menu1.html'
 ])
 
-<section {{ $attributes->merge(['class' => 'relative h-[550px] md:h-[700px] flex items-end text-white overflow-hidden']) }}
+<section {{ $attributes->merge(['class' => 'relative h-[90vh] md:h-[700px] flex items-end text-white overflow-hidden']) }}
     style="background-image: url('{{ $image }}'); background-size: cover; background-position: center;" loading="lazy">
 
     {{-- Dark Gradient Overlay --}}
