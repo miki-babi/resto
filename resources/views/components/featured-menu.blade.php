@@ -96,7 +96,7 @@
                 </div>
                 <div class="p-2 md:p-4">
                     <h3 class="font-bold text-xs md:text-lg mb-1 dark:text-white">{{ $pizza['title'] }}</h3>
-                    <p class="text-red-600 font-bold text-sm">{{ $pizza['price'] }}</p>
+                    <p class="text-black/50 font-bold text-sm">{{ $pizza['price'] }}</p>
                 </div>
             </div>
         @endforeach
