@@ -15,35 +15,42 @@ class MenuItemForm
     {
         return $schema
             ->components([
-                
-        Select::make('menu_category_id')
-            ->relationship('category', 'name')
-            ->required(),
 
-        TextInput::make('title')
-            ->required(),
+                Select::make('menu_category_id')
+                    ->relationship('category', 'name')
+                    ->required(),
 
-        TextInput::make('slug')
-            ->required(),
+                TextInput::make('title')
+                    ->required(),
 
-        Textarea::make('description'),
+                TextInput::make('slug')
+                    ->required(),
 
-        TextInput::make('price')
-            ->numeric(),
+                Textarea::make('description'),
 
-        Toggle::make('is_available')
-            ->default(true),
+                TextInput::make('price')
+                    ->numeric(),
 
-        Toggle::make('is_featured'),
+                Toggle::make('is_available')
+                    ->default(true),
 
-        TextInput::make('sort_order')
-            ->numeric()
-            ->default(0),
+                Toggle::make('is_featured'),
 
-        SpatieMediaLibraryFileUpload::make('menu_images')
-            ->collection('menu_images')
-            ->multiple()
-            ->image(),
+                TextInput::make('sort_order')
+                    ->numeric()
+                    ->default(0),
+
+                SpatieMediaLibraryFileUpload::make('menu_images')
+                    ->collection('menu_images')
+                    ->multiple()
+                    ->image()
+                    // ->image()
+                    ->imageEditor() // Enables the editor
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        '1:1',
+                    ]),
             ]);
     }
 }

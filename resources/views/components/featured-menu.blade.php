@@ -57,30 +57,24 @@
             </div> --}}
 
 
-            @props(
-            ['items' => [],
-            'title' => 'Our Menu',
-            'link' => null,
-            'linkText' => null
-            ])
+@props(['items' => [], 'title' => 'Our Menu', 'link' => null, 'linkText' => null])
 
 <section x-data="{
     isOpen: false,
-    item: { title: '', price: '', description: '', images: [] },
+    item: { title: '', price: '', description: '', images: [], variants: [], addons: [] },
     activeImage: 0,
     next() { this.activeImage = (this.activeImage + 1) % this.item.images.length },
     prev() { this.activeImage = (this.activeImage - 1 + this.item.images.length) % this.item.images.length }
-}" 
-@open-menu-modal="item = $event.detail; isOpen = true; activeImage = 0"
-@keydown.escape.window="isOpen = false" 
-class="mb-2">
+}" @open-menu-modal="item = $event.detail; isOpen = true; activeImage = 0"
+    @keydown.escape.window="isOpen = false" class="mb-2">
 
     {{-- Section Header --}}
     <div class="flex items-center justify-between mb-4 border-l-4 border-red-600 pl-4">
-        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white  tracking-tight">
+        <h2 class="text-3xl font-extrabold font-serif text-slate-900 dark:text-white tracking-tight">
             {{ $title }}
         </h2>
-        <a class="text-metro-red font-serif font-semibold hover:underline {{ $link ? '' : 'hidden' }}" href={{ $link  }}>
+        <a class="text-metro-red font-serif font-semibold hover:underline {{ $link ? '' : 'hidden' }}"
+            href={{ $link }}>
             {{ $linkText }} ›
         </a>
     </div>
@@ -92,18 +86,13 @@ class="mb-2">
 
     {{-- Horizontal Scrollable List --}}
     <div class="flex gap-2 md:gap-6 overflow-x-auto pb-6 scrollbar-hide">
-        @foreach($items as $pizza)
-            <div 
-                @click="$dispatch('open-menu-modal', {{ json_encode($pizza) }})"
-                class="min-w-[calc(33.333%-8px)] md:min-w-[280px] bg-white dark:bg-slate-800 overflow-hidden group cursor-pointer transition-transform active:scale-95"
-            >
+        @foreach ($items as $pizza)
+            <div @click="$dispatch('open-menu-modal', {{ json_encode($pizza) }})"
+                class="min-w-[calc(33.333%-8px)] md:min-w-[280px] bg-white dark:bg-slate-800 overflow-hidden group cursor-pointer transition-transform active:scale-95">
                 <div class="relative overflow-hidden md:rounded-[2rem] rounded-xl">
-                    <img 
-                        alt="{{ $pizza['title'] }}"
-                        loading="lazy"
+                    <img alt="{{ $pizza['title'] }}" loading="lazy"
                         class="w-full h-32 md:h-80 object-cover group-hover:scale-105 transition duration-500"
-                        src="{{ $pizza['images'][0] ?? 'placeholder.jpg' }}" 
-                    />
+                        src="{{ $pizza['images'][0] ?? 'placeholder.jpg' }}" />
                 </div>
                 <div class="p-2 md:p-4">
                     <h3 class="font-bold text-xs md:text-lg mb-1 dark:text-white">{{ $pizza['title'] }}</h3>
@@ -113,49 +102,92 @@ class="mb-2">
         @endforeach
     </div>
 
-    {{-- Modal Overlay --}}
+    {{-- Lightbox Overlay --}}
     <div x-show="isOpen" 
-         x-cloak 
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
-         class="fixed inset-0 z-[150] overflow-y-auto">
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black/95 p-4 md:p-8" 
+         x-cloak>
         
-        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" @click="isOpen = false"></div>
+        <div class="relative w-full max-w-4xl flex flex-col items-center overflow-y-auto max-h-screen scrollbar-hide">
+            
+            {{-- Image Section with Floating Controls --}}
+            <div class="relative w-full aspect-square md:aspect-auto md:h-[70vh] flex items-center justify-center bg-transparent group">
+                <template x-if="item.images && item.images.length">
+                    <div class="relative h-full w-full flex items-center justify-center">
+                        <img :src="item.images[activeImage]" 
+                             class="max-h-full max-w-full object-contain transition-opacity duration-300"
+                             :key="activeImage">
+                        
+                        {{-- Floating Close Button (Matches Screenshot) --}}
+                        <button @click="isOpen = false" 
+                                class="absolute top-4 right-4 z-50 flex h-8 w-8 items-center justify-center rounded-full bg-white text-black shadow-lg hover:bg-slate-200 transition-colors">
+                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
 
-        <div class="flex min-h-screen items-center justify-center p-4">
-            <div class="relative w-full max-w-2xl overflow-hidden rounded-3xl bg-white dark:bg-slate-900 shadow-2xl" @click.stop>
-                
-                {{-- Close Button --}}
-                <button @click="isOpen = false" class="absolute right-4 top-4 z-50 rounded-full bg-black/20 p-2 text-white hover:bg-black/40 transition">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
+                        {{-- Floating Navigation Arrows (Matches Screenshot) --}}
+                        <template x-if="item.images.length > 1">
+                            <div class="absolute inset-0 flex items-center justify-between px-2">
+                                <button @click="prev()" class="bg-white text-black rounded-full h-8 w-8 flex items-center justify-center shadow-lg hover:bg-slate-200 transition-colors">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                                <button @click="next()" class="bg-white text-black rounded-full h-8 w-8 flex items-center justify-center shadow-lg hover:bg-slate-200 transition-colors">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
 
-                {{-- Carousel Section --}}
-                <div class="relative h-auto md:h-[600px] bg-slate-200">
-                    <template x-if="item.images && item.images.length > 0">
-                        <div class="h-full w-full">
-                            <img :src="item.images[activeImage]" class="h-full w-full object-cover transition-all duration-500">
-                            
-                            <template x-if="item.images.length > 1">
-                                <div class="absolute inset-0 flex items-center justify-between px-4">
-                                    <button @click="prev()" class="rounded-full bg-white/20 p-2 text-white hover:bg-white/40 shadow-lg">
-                                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                                    </button>
-                                    <button @click="next()" class="rounded-full bg-white/20 p-2 text-white hover:bg-white/40 shadow-lg">
-                                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                                    </button>
-                                </div>
-                            </template>
-                        </div>
-                    </template>
+            {{-- Details Section Below Image --}}
+            <div class="w-full max-w-2xl mt-6 px-4 pb-12 text-center text-white">
+                <div class="mb-4">
+                    <h2 class="text-3xl md:text-4xl font-black mb-1" x-text="item.title"></h2>
+                    <div class="text-xl font-bold text-amber-500" x-text="item.price"></div>
                 </div>
 
-                {{-- Content --}}
-                <div class="p-8">
-                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white" x-text="item.title"></h2>
-                    <span class="text-2xl font-black text-red-600 block my-2" x-text="item.price"></span>
-                    <p class="text-slate-600 dark:text-slate-400 text-lg leading-relaxed" x-text="item.description"></p>
+                <p class="text-slate-300 text-lg leading-relaxed mb-6" x-text="item.description"></p>
+
+                {{-- Variants & Add-ons in a compact grid --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                    <template x-if="item.variants && item.variants.length">
+                        <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                            <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3">Variants</h3>
+                            <div class="flex flex-col gap-2">
+                                <template x-for="(variant, index) in item.variants" :key="index">
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="font-medium text-slate-200" x-text="variant.name"></span>
+                                        <span class="text-amber-500 font-bold" x-text="variant.price"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template x-if="item.addons && item.addons.length">
+                        <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                            <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3">Add-ons</h3>
+                            <div class="flex flex-col gap-2">
+                                <template x-for="(addon, index) in item.addons" :key="index">
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="font-medium text-slate-200" x-text="addon.name"></span>
+                                        <span class="text-slate-400 font-bold" x-text="addon.price"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>

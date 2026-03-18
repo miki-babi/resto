@@ -5,6 +5,25 @@
             content="Experience the heart of Bisrate Gebriel at Mera Coffee. A cozy coffee shop perfect for relaxing, working, and enjoying fine brews.">
         <meta property="og:title" content="Mera Coffee | Cozy Coffee Shop in Bisrate Gebriel">
         <meta property="og:image" content="https://images.pexels.com/photos/302902/pexels-photo-302902.jpeg">
+        @php
+            $faqSchema = collect($faqs ?? [])->map(function ($faq) {
+                return [
+                    '@type' => 'Question',
+                    'name' => data_get($faq, 'question'),
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text' => trim(strip_tags((string) data_get($faq, 'answer', ''))),
+                    ],
+                ];
+            })->filter(fn ($faq) => filled($faq['name']) && filled($faq['acceptedAnswer']['text']))->values();
+        @endphp
+        @if ($faqSchema->isNotEmpty())
+            <script type="application/ld+json">{!! json_encode([
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => $faqSchema,
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+        @endif
         {{-- ... add other meta tags here ... --}}
     @endpush
 
@@ -17,119 +36,27 @@
     {{-- 3. Top Picks --}}
     <section class="py-6 overflow-hidden">
         <div class="container mx-auto px-4 max-w-7xl">
-
-            @php
-                $pizzas = [
-                    [
-                        'title' => 'Cheese Pizza (14")',
-                        'price' => '$14.99',
-                        'description' => 'A delicious classic with gooey mozzarella.',
-                        'images' => [
-                            'https://lh3.googleusercontent.com/aida-public/AB6AXuCFLCo_kyxeWIe3N_tOQIXRNnwPe7nWUb-3XzjWdg-FCI56NDbDAfeLlbUfOv4-NHvbcfL8cL6ozIjJBqa6C3c4O6x_EHzPDnkQEHBRG3uVQBayXK3vb9_Gm8aHIg3eiiics9DznmtCjA-ee56BjW4AGKkfWbmey8VpVCKdkUGHTcjwCGCxrHCf4Jlrtn1tDIEv83tKOD1KOYKqDfNEvO9p1gY7jor2ssThyoeTrn1YALfckz9_0HYBcUi4S0xZf6mQMT8Wg4Q9vyY',
-                            '/img/pizza1-alt.jpg',
-                        ],
-                    ],
-                    // ... more items
-                ];
-            @endphp
-
-            <x-featured-menu title="Popular orders" :items="$pizzas" />
+            <x-featured-menu title="Popular orders" :items="$featuredItems ?? []" />
         </div>
     </section>
 
-    {{-- 4. Your Gallery with Floating Tooltips --}}
+    {{-- 4. Gallery --}}
     @php
-        $galleryData = [
-            [
-                'src' =>
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok',
-                'alt' => 'Our Signature Latte',
-            ],
-            [
-                'src' =>
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok',
-                'alt' => 'Freshly Baked Pastries',
-            ],
-            [
-                'src' =>
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok',
-                'alt' => 'Cozy Corner for Working',
-            ],
-            [
-                'src' =>
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok',
-                'alt' => 'Hand-poured V60',
-            ],
-            [
-                'src' =>
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok',
-                'alt' => 'Evening Atmosphere',
-            ],
-            [
-                'src' =>
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok',
-                'alt' => 'Premium Ethiopian Beans',
-            ],
-        ];
+        $slug = 'best-foods-around-bole';
+        $title = null;
     @endphp
 
-    <x-gallery title="Our Best Moments" :items="$galleryData" />
+    <x-gallery :title="$title" :slug="$slug" />
 
     {{-- 5. Rest of your sections --}}
-    <x-section :reversed="true" subtitle="piza" title="America's Neighborhood Pizzeria"
+    {{-- <x-section :reversed="true" subtitle="piza" title="America's Neighborhood Pizzeria"
         description="At Metro Pizza, we honor the great traditions of America's landmark Pizzerias. Our dough is made fresh each day from the finest wheat."
         image="https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok"
-        buttonText="Request Catering" :buttonUrl="'/menu2.html'" />
+        buttonText="Request Catering" :buttonUrl="'/menu2.html'" /> --}}
 
+    <x-testimonials />
 
-    <x-testimonials :testimonials="[
-        [
-            'name' => 'Jerry R.',
-            'stars' => 5,
-            'avatar' => 'https://i.pravatar.cc/150?u=jerry',
-            'content' =>
-                'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.',
-        ],
-        [
-            'name' => 'Jerry R.',
-            'stars' => 5,
-            'avatar' => 'https://i.pravatar.cc/150?u=jerry',
-            'content' =>
-                'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.',
-        ],
-        [
-            'name' => 'Jerry R.',
-            'stars' => 5,
-            'avatar' => 'https://i.pravatar.cc/150?u=jerry',
-            'content' =>
-                'Wow! This small Pizza establishment is really amazing! I would highly recommend the pepperoni and the garlic knots, they are absolute game changers for any pizza lover in the area.',
-        ],
-    
-        // ... add more reviews here
-    ]" />
-
-
-
-    @php
-        $meraFaqs = [
-            [
-                'question' => 'What are you known for?',
-                'answer' =>
-                    'We are known for our <strong>authentic Ethiopian beans</strong>, cozy workspace, and the best lattes in Bisrate Gebriel.',
-            ],
-            [
-                'question' => 'Do you have Wi-Fi for working?',
-                'answer' =>
-                    'Yes! We offer high-speed fiber internet for our customers, making it the perfect spot for remote work.',
-            ],
-            [
-                'question' => 'Do you offer delivery?',
-                'answer' => 'You can find us on local delivery apps, or stop by for a quick takeout.',
-            ],
-        ];
-    @endphp
-
-    <x-faq :items="$meraFaqs" />
+    <x-faq :items="$faqs ?? []" />
     <x-locations />
 
     {{-- <x-section-main backgroundImage="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg">
@@ -140,7 +67,7 @@
         buttonText="Read Our Full Story" 
         buttonUrl="/about" />
     </x-section-main> --}}
-    <x-banner-child
+    {{-- <x-banner-child
         image="https://mattengas.com/pluto-images/funnel/images/05923b92-49f8-48a8-a6d1-7e2e8442625a?w=560&h=560&fit=cover"
         title="Mera's Story" signature="The Mera Coffee Team"
         content="We’re Matt and Enga—the pizza-loving duo behind Mattenga’s!  What started as a simple dream is now multiple locations across SAN ANTONIO. /n No shortcuts. No gimmicks. Just real ingredients and unforgettable flavors.Thanks for sharing your pizza cravings with us! Let’s eat! 🍕"
@@ -152,7 +79,7 @@
             title="Mera's Story" signature="The Mera Coffee Team"
             content="We’re Matt and Enga—the pizza-loving duo behind Mattenga’s!  What started as a simple dream is now multiple locations across SAN ANTONIO. /n No shortcuts. No gimmicks. Just real ingredients and unforgettable flavors.Thanks for sharing your pizza cravings with us! Let’s eat! 🍕"
             buttonText="Visit Us Today" buttonUrl="/locations" />
-    </x-banner-main>
+    </x-banner-main> --}}
 
 
 </x-layouts.app-main>

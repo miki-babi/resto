@@ -1,9 +1,3 @@
-@props([
-    'title' => 'Our Gallery',
-    'description' => null,
-    'items' => []
-])
-
 <div x-data="{ 
     open: false, 
     currentIndex: 0, 
@@ -24,20 +18,26 @@
             </div>
 
             {{-- Responsive Grid: 2 cols on small, 3 on md+ --}}
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                @foreach($items as $index => $item)
-                    <div @click="open = true; currentIndex = {{ $index }}" 
-                         class="overflow-hidden shadow-md aspect-square cursor-pointer group md:rounded-[2rem] rounded-xl ">
-                        <img src="{{ $item['src'] }}" alt="{{ $item['alt'] ?? $title }}" loading="lazy"
-                             class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                    </div>
-                @endforeach
-            </div>
+            @if (filled($items))
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                    @foreach($items as $index => $item)
+                        <div @click="open = true; currentIndex = {{ $index }}" 
+                             class="overflow-hidden shadow-md aspect-square cursor-pointer group md:rounded-[2rem] rounded-xl ">
+                            <img src="{{ $item['src'] }}" alt="{{ $item['alt'] ?? $title }}" loading="lazy"
+                                 class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="rounded-3xl border border-gray-200 bg-gray-50 px-6 py-12 text-center text-gray-500">
+                    No gallery images available yet.
+                </div>
+            @endif
         </div>
     </section>
 
     {{-- Fullscreen Modal --}}
-    <template x-teleport="body">
+    <template x-teleport="body" x-if="images.length">
         <div x-show="open" 
              x-transition.opacity.duration.300ms
              @click.self="open = false"

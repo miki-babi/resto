@@ -65,6 +65,24 @@
     'testimonials' => []
 ])
 
+@php
+    $testimonials = collect($testimonials);
+
+    if ($testimonials->isEmpty()) {
+        $testimonials = \App\Models\Review::query()
+            ->featured()
+            ->orderBy('sort_order')
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn ($review) => [
+                'name' => $review->reviewer_name,
+                'stars' => $review->stars,
+                'avatar' => $review->getFirstMediaUrl('avatar') ?: 'https://placehold.co/96x96?text=' . urlencode((string) str($review->reviewer_name)->substr(0, 1)),
+                'content' => $review->content,
+            ]);
+    }
+@endphp
+
 <section class="py-20 px-4">
     <div class="container mx-auto max-w-7xl bg-[#eeeeee] py-16 px-8 rounded-[3rem]">
         
@@ -75,7 +93,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @foreach($testimonials as $item)
+            @forelse($testimonials as $item)
                 <div 
                     x-data="{ expanded: false }" 
                     class="bg-white p-10 rounded-[2rem] shadow-sm flex flex-col justify-between min-h-[350px]"
@@ -110,7 +128,11 @@
                         <p class="font-semibold text-gray-700">{{ $item['name'] }}</p>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="md:col-span-3 text-center text-gray-600">
+                    No featured testimonials available yet.
+                </div>
+            @endforelse
         </div>
     </div>
 </section>

@@ -5,6 +5,8 @@
     'excerpt' => null,
     'image' => null,
     'images' => null,
+    'variants' => [],
+    'addons' => [],
     'imageAlt' => null,
 ])
 
@@ -37,22 +39,23 @@
     $cardExcerpt = $excerpt ?: $description;
 @endphp
 
-<div
+<button
+    type="button"
     x-data
-    @click="$dispatch('open-menu-modal', {{ json_encode(['title' => $title, 'price' => $price, 'description' => $description, 'images' => $resolvedImages]) }})"
-    {{ $attributes->merge(['class' => 'cursor-pointer bg-white dark:bg-slate-800 rounded-2xl flex shadow-sm border border-slate-100 dark:border-slate-700/50 hover:shadow-md transition-shadow overflow-hidden']) }}
+    @click="$dispatch('open-menu-modal', {{ json_encode(['title' => $title, 'price' => $price, 'description' => $description, 'images' => $resolvedImages, 'variants' => $variants, 'addons' => $addons]) }})"
+    class="relative flex aspect-square overflow-visible cursor-pointer focus:outline-none group"
 >
-    <div class="flex-1 p-6">
-        <div class="flex justify-between items-start mb-2">
-            <h3 class="text-xl font-bold text-slate-900 dark:text-white">{{ $title }}</h3>
+    <div class="absolute inset-0 overflow-hidden rounded-3xl bg-slate-100 dark:bg-slate-800 transition-transform duration-300 group-hover:scale-[1.01] md:group-hover:scale-[1.02] shadow-sm group-hover:shadow-md">
+        <img 
+            src="{{ $thumbnail }}" 
+            alt="{{ $alt }}" 
+            class="w-full h-full object-cover" 
+            loading="lazy" 
+        />
+        {{-- Overlay for text on hover or subtle always-on info --}}
+        <div class="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <h3 class="text-white font-bold text-sm truncate">{{ $title }}</h3>
+            <p class="text-white/80 text-xs font-semibold">{{ $price }}</p>
         </div>
-        <span class="text-metro-red font-black text-lg">{{ $price }}</span>
-        <p class="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mt-2">
-            {{ $cardExcerpt }}
-        </p>
     </div>
-
-    <div class="relative w-28 h-full md:h-full md:w-48  flex-shrink-0">
-        <img class="w-full h-full object-cover" src="{{ $thumbnail }}" alt="{{ $alt }}" loading="lazy" />
-    </div>
-</div>
+</button>

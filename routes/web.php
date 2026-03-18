@@ -5,13 +5,10 @@ use App\Models\Feedback;
 use App\Models\FeedbackLink;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use App\Http\Controllers\LandingController;
 
-Route::get('/', function () {
-    return view('pages.landing.main');
-})->name('home');
-Route::get('/menu', function () {
-    return view('pages.landing.menu');
-})->name('menu');
+Route::get('/', [LandingController::class, 'home'])->name('home');
+Route::get('/menu', [LandingController::class, 'menu'])->name('menu');
 
 
 
@@ -87,4 +84,3 @@ Route::get('/{page}', function ($page) {
 Route::get('/{page}/{slug}', function ($page , $slug ) {
     return view('pages.show');
 })->name('page.slug');
-
