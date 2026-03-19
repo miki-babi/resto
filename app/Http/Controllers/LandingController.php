@@ -80,6 +80,42 @@ class LandingController extends Controller
         }
     }
 
+    public function seomenupage($slug)
+    {
+        
+        $requestId = uniqid('home_', true);
+
+        Log::debug('LandingController@home start', [
+            'request_id' => $requestId,
+            'path' => request()->path(),
+        ]);
+
+        try {
+            $featuredItems = $this->getFeaturedItems();
+
+            Log::info('LandingController@home fetched items', [
+                'request_id' => $requestId,
+                'featured_items_count' => count($featuredItems),
+                'sample_titles' => array_slice(array_map(fn ($i) => $i['title'] ?? null, $featuredItems), 0, 5),
+            ]);
+
+            return view('pages.landing.main', [
+                'featuredItems' => $featuredItems,
+                'faqs' => $this->getFaqItems(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('LandingController@home failed', [
+                'request_id' => $requestId,
+                'error' => $e->getMessage(),
+                'exception' => get_class($e),
+            ]);
+
+            throw $e;
+        }
+    }
+
+
+
     private function getFeaturedItems(): array
     {
         Log::debug('LandingController@getFeaturedItems query start');

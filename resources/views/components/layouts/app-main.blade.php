@@ -27,33 +27,33 @@
     
     <header class="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
         @php
-    $navLinks = [
-        'Menu' => '/menu',
-        'Catering' => '/catering',
+    // $navLinks = [
+    //     'Menu' => '/menu',
+    //     'Catering' => '/catering',
 
-        'Our Story' => [
-            'Our Heritage' => '/history',
-            'The Roastery' => '/roasting',
-            'Sustainability' => '/impact',
-        ],
-    ];
+    //     'Our Story' => [
+    //         'Our Heritage' => '/history',
+    //         'The Roastery' => '/roasting',
+    //         'Sustainability' => '/impact',
+    //     ],
+    // ];
 
     $navCtas = [
         [
             'text' => 'Get Directions',
-            'url' => '/order',
+            'url' => 'https://maps.google.com',
             'class' => 'bg-metro-dark text-white hover:bg-red-700 font-serif' // Primary Color
         ],
         [
-            'text' => 'Order Online',
-            'url' => 'https://maps.google.com',
+            'text' => 'View Menu',
+            'url' => '/menu',
             'class' => 'bg-metro-red text-white hover:bg-black font-serif' // Secondary Color
         ],
     ];
 @endphp
 
 <x-nav-main 
-    :links="$navLinks" 
+    {{-- :links="$navLinks"  --}}
     :ctas="$navCtas" 
     logo="https://lh3.googleusercontent.com/aida-public/AB6AXuCVdcILOZsUkPUSb0rfkVxML6tVOWvrYEGILcFJfE9OBzOqy4Zg4xBhCIAFRdtpRPjsPjOEM2W2eyZ0lTHvbSKhb_lurp3JphRbZ5y9E4RyfK7HottcXImI_ZB_S_PjqBUiJjBXq5jtSgoMgBbmQ86HlLVz7NoTXGVD86wCQ25a9W-jjJ8hp3aHqYVUVxmAnHV8rEc5UknHfWpypT6ro72otWPf5zxlpZb2CaUTvkkmWBT2ZoyaCavbvR6iHyGuEvpJlyVgh_mDD6s"
 />

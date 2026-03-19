@@ -14,7 +14,7 @@
     @keydown.escape.window="isOpen = false" class="max-w-7xl mx-auto px-4 md:px-8 py-12">
     
     <div class="flex flex-col mb-10 text-left">
-        <h2 class="text-4xl md:text-5xl font-black font-serif text-slate-900 dark:text-white mb-2 tracking-tight flex items-center justify-start">
+        <h2 class="text-2xl font-bold text-gray-900 mb-2 font-serif">
             {{ $title }}
         </h2>
         @if($subtitle)

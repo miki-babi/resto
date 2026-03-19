@@ -1,38 +1,9 @@
 @blaze(compile: true)
 
-<footer class="bg-metro-dark pt-20 pb-10">
+<footer class=" pt-2 pb-10">
         <div class="container mx-auto px-4 max-w-7xl">
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10 mb-16 mx-auto  ">
-
-                <div>
-                    <h4 class="font-bold mb-4 uppercase text-xs tracking-widest text-gray-400">Links</h4>
-                    <ul class="space-y-2 text-sm text-white">
-                        <li><a class="hover:text-metro-red" href="#">Menu</a></li>
-                        <li><a class="hover:text-metro-red" href="#">Our Story</a></li>
-                        <li><a class="hover:text-metro-red" href="#">Times Night</a></li>
-                        <li><a class="hover:text-metro-red" href="#">Metro Pizza - Decatur</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 uppercase text-xs tracking-widest text-gray-400">Services</h4>
-                    <ul class="space-y-2 text-sm text-white">
-                        <li><a class="hover:text-metro-red" href="#">Gift Cards</a></li>
-                        <li><a class="hover:text-metro-red" href="#">What Makes Us Special</a></li>
-                        <li><a class="hover:text-metro-red" href="#">Metro Pizza - Green Valley</a></li>
-                        <li><a class="hover:text-metro-red" href="#">Metro Pizza Awards &amp; More</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4 uppercase text-xs tracking-widest text-gray-400">Catering</h4>
-                    <ul class="space-y-2 text-sm text-white">
-                        <li><a class="hover:text-metro-red" href="#">Catering</a></li>
-                        <li><a class="hover:text-metro-red" href="#">Game Room</a></li>
-                        <li><a class="hover:text-metro-red" href="#">Metro Pizza - Northwest</a></li>
-                        <li><a class="hover:text-metro-red" href="#">Rich White</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-white gap-4">
+           
+            <div class=" flex flex-col md:flex-row justify-between items-center text-xs text-black/50 gap-4">
                 <div class="flex gap-4">
                     <a class="hover:underline" href="#">Terms of Service</a>
                     <a class="hover:underline" href="#">Accessibility</a>

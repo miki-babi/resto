@@ -13,9 +13,10 @@
 
 @theme {
     /* Custom Colors */
-    --color-metro-red: #c78f69;
-    --color-metro-dark: #6c472d;
+    --color-metro-red: #d77c30;
+    --color-metro-dark: #b96928;
     --color-metroGrey: #c78f69;
+    --color-metro-hover: #97551f;
 
     /* Custom Fonts */
     --font-serif: "Playfair Display", serif;

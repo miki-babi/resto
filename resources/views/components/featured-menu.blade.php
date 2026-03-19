@@ -69,8 +69,8 @@
     @keydown.escape.window="isOpen = false" class="mb-2">
 
     {{-- Section Header --}}
-    <div class="flex items-center justify-between mb-4  pl-4">
-        <h2 class="text-3xl font-extrabold font-serif text-slate-900 dark:text-white tracking-tight">
+    <div class="flex items-center justify-between mb-4  ">
+        <h2 class="text-2xl font-bold text-gray-900 mb-2 font-serif">
             {{ $title }}
         </h2>
         <a class="text-metro-red font-serif font-semibold hover:underline {{ $link ? '' : 'hidden' }}"

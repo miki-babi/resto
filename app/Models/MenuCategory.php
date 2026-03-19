@@ -19,4 +19,9 @@ class MenuCategory extends Model
     {
         return $this->hasMany(MenuItem::class);
     }
+
+    public function pages()
+    {
+        return $this->hasMany(Page::class);
+    }
 }

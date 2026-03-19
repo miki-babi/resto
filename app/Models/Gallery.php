@@ -43,4 +43,9 @@ class Gallery extends Model implements HasMedia
     {
         return $this->public_title ?: $this->title;
     }
+
+    public function pages()
+    {
+        return $this->hasMany(Page::class);
+    }
 }
