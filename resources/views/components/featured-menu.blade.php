@@ -85,7 +85,7 @@
             </div> --}}
 
     {{-- Horizontal Scrollable List --}}
-    <div class="flex gap-2 md:gap-6 overflow-x-auto pb-6 scrollbar-hide">
+    <div class="flex gap-2 md:gap-6 overflow-x-auto pb-2 scrollbar-hide">
         @foreach ($items as $pizza)
             <div @click="$dispatch('open-menu-modal', {{ json_encode($pizza) }})"
                 class="min-w-[calc(33.333%-8px)] md:min-w-[280px] bg-white dark:bg-slate-800 overflow-hidden group cursor-pointer transition-transform active:scale-95">
