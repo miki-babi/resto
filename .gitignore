@@ -16,7 +16,7 @@
 # /public/build
 # /public/hot
 # /public/storage
-/public/asset/*.mp4
+/public/asset
 /storage/*.key
 /storage/pail
 # /vendor
