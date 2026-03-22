@@ -15,9 +15,20 @@ Route::get('/storage', function () {
 
 Route::get('/', [LandingController::class, 'home'])->name('home');
 Route::get('/menu', [LandingController::class, 'menu'])->name('menu');
+Route::get('/catering', [LandingController::class, 'catering'])->name('catering');
+Route::get('/catering/request', [LandingController::class, 'cateringRequest'])->name('catering.request.page');
+Route::post('/catering/request', [LandingController::class, 'submitCateringRequest'])->name('catering.request');
 
 
+Route::get('/catering2', function () {
+    return view('catering');
+})->name('catering2');
 
+Route::group(['prefix' => '{lang}', 'where' => ['lang' => 'en|am']], function () {
+    Route::get('/catering2', function () {
+        return view('catering');
+    })->name('catering2.localized');
+});
 
 
 
@@ -84,9 +95,6 @@ Route::post('/feedback/{id}', function (Request $request, $id) {
 
 
 
-Route::get('/{page}', function ($page) {
-    return view('pages.show');
-})->name('page');
-Route::get('/{page}/{slug}', function ($page, $slug) {
-    return view('pages.show');
-})->name('page.slug');
+Route::get('/{slug}', [LandingController::class, 'page'])
+    ->name('page')
+    ->where('slug', '^[A-Za-z0-9-]+$');

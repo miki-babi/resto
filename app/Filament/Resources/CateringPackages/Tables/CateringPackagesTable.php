@@ -20,6 +20,14 @@ class CateringPackagesTable
                 TextColumn::make('min_guests')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('price_per_person')
+                    ->label('Per Person')
+                    ->formatStateUsing(fn ($state) => $state === null ? '—' : number_format((float) $state, 0))
+                    ->sortable(),
+                TextColumn::make('price_total')
+                    ->label('Package')
+                    ->formatStateUsing(fn ($state) => $state === null ? '—' : number_format((float) $state, 0))
+                    ->sortable(),
                 IconColumn::make('is_active')
                     ->boolean(),
                 TextColumn::make('created_at')

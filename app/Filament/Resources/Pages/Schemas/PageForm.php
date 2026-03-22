@@ -73,10 +73,14 @@ class PageForm
                 ->relationship('gallery', 'title'),
 
                 SpatieMediaLibraryFileUpload::make('hero_image')
+                ->disk('public')
+
     ->collection('hero_image'),
 
 SpatieMediaLibraryFileUpload::make('hero_video')
     ->collection('hero_video')
+                ->disk('public')
+
     ->acceptedFileTypes(['video/mp4', 'video/webm'])
     ->maxSize(102400), // 100MB
             ]);

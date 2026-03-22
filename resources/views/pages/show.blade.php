@@ -1,34 +1,46 @@
 <x-layouts.app-main>
-    <x-section :reversed="false" subtitle="piza" title="America's Neighborhood Pizzeria"
-        description="At Metro Pizza, we honor the great traditions of America's landmark Pizzerias. Our dough is made fresh each day from the finest wheat."
-        image="https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok"
-        buttonText="Request Catering" :buttonUrl="'/menu2.html'" /> 
-        <x-section :reversed="true" subtitle="piza"
-        title="America's Neighborhood Pizzeria"
-        description="At Metro Pizza, we honor the great traditions of America's landmark Pizzerias. Our dough is made fresh each day from the finest wheat."
-        image="https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok"
-        buttonText="Request Catering" :buttonUrl="'/menu2.html'" /> 
-        <x-section :reversed="false" subtitle="piza"
-        title="America's Neighborhood Pizzeria"
-        description="At Metro Pizza, we honor the great traditions of America's landmark Pizzerias. Our dough is made fresh each day from the finest wheat."
-        image="https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok"
-        buttonText="Request Catering" :buttonUrl="'/menu2.html'" />
-         <x-section :reversed="true" subtitle="piza"
-        title="America's Neighborhood Pizzeria"
-        description="At Metro Pizza, we honor the great traditions of America's landmark Pizzerias. Our dough is made fresh each day from the finest wheat."
-        image="https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok"
-        buttonText="Request Catering" :buttonUrl="'/menu2.html'" /> 
-        <x-section :reversed="false" subtitle="piza"
-        title="America's Neighborhood Pizzeria"
-        description="At Metro Pizza, we honor the great traditions of America's landmark Pizzerias. Our dough is made fresh each day from the finest wheat."
-        image="https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok"
-        buttonText="Request Catering" :buttonUrl="'/menu2.html'" /> 
-        <x-section :reversed="true" subtitle="piza"
-        title="America's Neighborhood Pizzeria"
-        description="At Metro Pizza, we honor the great traditions of America's landmark Pizzerias. Our dough is made fresh each day from the finest wheat."
-        image="https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok"
-        buttonText="Request Catering" :buttonUrl="'/menu2.html'" />
+    @php
+        $heroImage = $page?->getFirstMediaUrl('hero_image') ?: 'https://images.pexels.com/photos/302902/pexels-photo-302902.jpeg';
+        $heroVideo = $page?->getFirstMediaUrl('hero_video');
+        $heroTitle = $page?->hero_headline ?: $page?->title;
+        $heroSubtitle = $page?->hero_subtitle;
+        $primaryText = $page?->primary_cta_text;
+        $primaryUrl = $page?->primary_cta_url ?: '#';
+        $secondaryText = $page?->secondary_cta_text;
+        $secondaryUrl = $page?->secondary_cta_url ?: '#';
+    @endphp
+
+    <x-hero-main
+        :image="$heroImage"
+        :backgroundVideo="$heroVideo"
+        :subtitle="$heroSubtitle"
+        :title="$heroTitle"
+        :primary-button-text="$primaryText ?: 'Learn More'"
+        :primary-button-url="$primaryUrl"
+        :secondary-button-text="$secondaryText"
+        :secondary-button-url="$secondaryUrl"
+    />
+
+    @if($page?->hero_subtitle || $page?->hero_headline)
+        <x-section
+            :title="$page?->hero_headline ?: $page?->title"
+            :description="$page?->hero_subtitle ?: ''"
+            :image="$heroImage"
+        />
+    @endif
+
+    @if(!empty($menuItems))
+        <section class="py-12">
+            <div class="container mx-auto max-w-7xl ">
+                <x-menu :title="$page->menuCategory?->name ?? 'Menu'" :items="$menuItems" />
+            </div>
+        </section>
+    @endif
+
+    @if($page?->gallery)
+        <x-gallery :title="$page->gallery?->display_title" :slug="$page->gallery?->slug" />
+    @endif
 
     <x-testimonials />
-        <x-locations/>
+    <x-locations />
 </x-layouts.app-main>

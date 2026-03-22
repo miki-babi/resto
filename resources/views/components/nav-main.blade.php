@@ -1,8 +1,4 @@
-@props([
-    'logo' ,
-    'links' => [],
-    'ctas' => [],
-])
+@props(['logo', 'links' => [], 'ctas' => []])
 
 <div x-data="{ mobileMenuOpen: false }" class="relative bg-white border-b border-gray-100 sticky top-0 z-[100]">
     <nav
@@ -28,25 +24,24 @@
                                     d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div x-show="open" 
-         x-cloak
-         {{-- Added transition for an even smoother feel --}}
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0 translate-y-1"
-         x-transition:enter-end="opacity-100 translate-y-0"
-         x-transition:leave="transition ease-in duration-150"
-         class="absolute left-0 mt-2 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 z-50 normal-case">
-        
-        @foreach ($data as $childLabel => $childUrl)
-            <a href="{{ $childUrl }}"
-                class="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-metro-red font-serif">
-                {{ $childLabel }}
-            </a>
-        @endforeach
-    </div>
+                        <div x-show="open" x-cloak {{-- Added transition for an even smoother feel --}}
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 translate-y-1"
+                            x-transition:enter-end="opacity-100 translate-y-0"
+                            x-transition:leave="transition ease-in duration-150"
+                            class="absolute left-0 mt-2 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 z-50 normal-case">
+
+                            @foreach ($data as $childLabel => $childUrl)
+                                <a href="{{ $childUrl }}"
+                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-metro-red font-serif">
+                                    {{ $childLabel }}
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                 @else
-                    <a class="hover:text-metro-red transition font-serif" href="{{ $data }}">{{ $label }}</a>
+                    <a class="hover:text-metro-red transition font-serif"
+                        href="{{ $data }}">{{ $label }}</a>
                 @endif
             @endforeach
         </div>

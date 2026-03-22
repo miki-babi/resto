@@ -72,8 +72,8 @@
                 </button> --}}
 
                 {{-- The Image --}}
-                <img :src="images[currentIndex].src" 
-                     :alt="images[currentIndex].alt"
+                <img :src="images[currentIndex] ? images[currentIndex].src : ''" 
+                     :alt="images[currentIndex] ? images[currentIndex].alt : ''"
                      x-touch:swipe.left="next()"
                      x-touch:swipe.right="prev()"
                      class="max-h-[85vh] md:max-h-[90vh] max-w-[95vw] md:max-w-5xl object-contain rounded-lg shadow-2xl">

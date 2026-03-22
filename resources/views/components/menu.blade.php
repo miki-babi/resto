@@ -11,7 +11,7 @@
     next() { this.activeImage = (this.activeImage + 1) % this.item.images.length },
     prev() { this.activeImage = (this.activeImage - 1 + this.item.images.length) % this.item.images.length }
 }" @open-menu-modal="item = $event.detail; isOpen = true; activeImage = 0"
-    @keydown.escape.window="isOpen = false" class="max-w-7xl mx-auto px-4 md:px-8 py-12">
+    @keydown.escape.window="isOpen = false" class="max-w-7xl mx-auto  md:px-8 py-12">
     
     <div class="flex flex-col mb-10 text-left">
         <h2 class="text-2xl font-bold text-gray-900 mb-2 font-serif">

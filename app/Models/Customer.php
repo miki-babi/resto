@@ -17,4 +17,8 @@ class Customer extends Model
     protected $casts = [
         'is_blocked' => 'boolean',
     ];
+    public function subscriptions()
+    {
+        return $this->hasMany(MealBoxSubscription::class);
+    }
 }

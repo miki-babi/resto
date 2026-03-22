@@ -12,15 +12,42 @@
 [x-cloak] { display: none !important; }
 
 @theme {
-    /* Custom Colors */
+    --color-accent: #d77c30; /* Metro Red */
+    --color-accent-strong: #b96928; /* Metro Dark */
+    --color-accent-hover: #97551f; /* Metro Hover */
+    --color-gold: #c78f69; /* Metro Grey */
+    --color-line: rgba(215, 124, 48, 0.16);
+    --color-success: #5e8c67;
+
+    /* Dark Theme Variants */
+    --color-bg-dark: #1e1e1e;
+    --color-bg-secondary-dark: #26211d;
+    --color-surface-dark: rgba(39, 34, 30, 0.7);
+    --color-surface-strong-dark: rgba(41, 36, 31, 0.92);
+    --color-card-dark: rgba(35, 31, 28, 0.9);
+    --color-text-dark: #f6ede4;
+    --color-text-soft-dark: #cebba7;
+    --color-accent-dark: #d77c30;
+    --color-accent-strong-dark: #b96928;
+    --color-line-dark: rgba(215, 124, 48, 0.12);
+    --color-success-dark: #8fcf9a;
+
+    --max-width: 1180px;
+    --radius-xl: 32px;
+    --radius-lg: 24px;
+    --radius-sm: 999px;
+    --transition-base: 260ms ease;
+
+    /* Existing Custom Colors */
     --color-metro-red: #d77c30;
     --color-metro-dark: #b96928;
     --color-metroGrey: #c78f69;
     --color-metro-hover: #97551f;
 
     /* Custom Fonts */
-    --font-serif: "Playfair Display", serif;
-    --font-sans: "Inter", "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-serif: "Cormorant Garamond", "Playfair Display", serif;
+    --font-script: "Great Vibes", cursive;
+    --font-sans: "Poppins", "Montserrat", "Inter", "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 .scrollbar-hide::-webkit-scrollbar {

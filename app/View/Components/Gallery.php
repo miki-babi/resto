@@ -30,6 +30,8 @@ class Gallery extends Component
             ? $items
             : $this->mapGalleryItems($gallery);
 
+        $resolvedItems = $this->normalizeItems($resolvedItems, $title ?: ($gallery?->display_title ?? 'Our Gallery'));
+
         $this->slug = $slug;
         $this->title = $title ?: ($gallery?->display_title ?? 'Our Gallery');
         $this->description = $description ?: $gallery?->description;
@@ -56,6 +58,42 @@ class Gallery extends Component
                     ?: sprintf('%s image %d', $gallery->display_title, $index + 1),
             ])
             ->filter(fn (array $item) => ($item['src'] ?? '') !== '')
+            ->values()
+            ->all();
+    }
+
+    private function normalizeItems(array $items, string $fallbackTitle): array
+    {
+        return collect($items)
+            ->map(function ($item, int $index) use ($fallbackTitle) {
+                if (is_string($item)) {
+                    return [
+                        'src' => $item,
+                        'alt' => sprintf('%s image %d', $fallbackTitle, $index + 1),
+                    ];
+                }
+
+                if (is_array($item)) {
+                    $src = $item['src'] ?? $item['url'] ?? null;
+                    if (!$src && isset($item[0]) && is_string($item[0])) {
+                        $src = $item[0];
+                    }
+
+                    if (!$src) {
+                        return null;
+                    }
+
+                    return [
+                        'src' => $src,
+                        'alt' => $item['alt']
+                            ?? $item['title']
+                            ?? sprintf('%s image %d', $fallbackTitle, $index + 1),
+                    ];
+                }
+
+                return null;
+            })
+            ->filter(fn ($item) => is_array($item) && ($item['src'] ?? '') !== '')
             ->values()
             ->all();
     }

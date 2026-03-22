@@ -30,8 +30,8 @@
     {{-- 2. Hero Section --}}
     <x-hero-main image="https://images.pexels.com/photos/302902/pexels-photo-302902.jpeg"
    backgroundVideo="{{ asset('asset/backgroundvideo3.mp4') }}"
-        subtitle="Best Coffee Shop around Bisrate Gebriel"
-        title="Mera Coffee | Quite Cozy Coffee Shop in the heart of Bisrate Gebriel" primary-button-text="Get Directions"
+        subtitle="Best Coffee Shop around Kanchis"
+        title="Wee Catering | Quite Cozy Coffee Shop in the heart of Kanchis" primary-button-text="Get Directions"
         primary-button-url="https://maps.google.com" secondary-button-text="View Menu" secondary-button-url="/menu" />
 
     {{-- 3. Top Picks --}}
