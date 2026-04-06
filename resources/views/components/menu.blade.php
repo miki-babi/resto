@@ -10,21 +10,8 @@
     activeImage: 0,
     next() { this.activeImage = (this.activeImage + 1) % this.item.images.length },
     prev() { this.activeImage = (this.activeImage - 1 + this.item.images.length) % this.item.images.length }
-}" @open-menu-modal="item = $event.detail; isOpen = true; activeImage = 0"
-    @keydown.escape.window="isOpen = false" class="max-w-7xl mx-auto  md:px-8 py-12">
-    
-    <div class="flex flex-col mb-10 text-left">
-        <h2 class="text-2xl font-bold text-gray-900 mb-2 font-serif">
-            {{ $title }}
-        </h2>
-        @if($subtitle)
-            <p class="text-slate-500 dark:text-slate-400 text-lg font-medium italic">
-                {{ $subtitle }}
-            </p>
-        @endif
-    </div>
-
-    <div class="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
+}" @open-menu-modal="item = $event.detail; isOpen = true; activeImage = 0">
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-8 lg:grid-cols-4 lg:gap-10">
         @forelse($items as $menuItem)
             <x-menu-item :title="$menuItem['title'] ?? 'Menu item'" :price="$menuItem['price'] ?? ''" :description="$menuItem['description'] ?? ''" :images="$menuItem['images'] ?? []" :variants="$menuItem['variants'] ?? []"
                 :addons="$menuItem['addons'] ?? []" />

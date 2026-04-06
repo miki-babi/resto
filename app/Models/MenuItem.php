@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -17,9 +16,11 @@ class MenuItem extends Model implements HasMedia
         'slug',
         'description',
         'price',
+        'loyalty_points',
         'is_available',
+        'preorder_available',
         'is_featured',
-        'sort_order'
+        'sort_order',
     ];
 
     public function category()

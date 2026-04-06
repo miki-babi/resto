@@ -24,63 +24,124 @@
                 'mainEntity' => $faqSchema,
             ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
         @endif
-        {{-- ... add other meta tags here ... --}}
     @endpush
 
-    {{-- 2. Hero Section --}}
-    <x-hero-main image="https://images.pexels.com/photos/302902/pexels-photo-302902.jpeg"
-   backgroundVideo="{{ asset('asset/backgroundvideo3.mp4') }}"
-        subtitle="Best Coffee Shop around Kanchis"
-        title="Wee Catering | Quite Cozy Coffee Shop in the heart of Kanchis" primary-button-text="Get Directions"
-        primary-button-url="https://maps.google.com" secondary-button-text="View Menu" secondary-button-url="/menu" />
+    {{-- 2. Modern Hero Section --}}
+    <section class="relative min-h-[85vh] flex items-center overflow-hidden bg-black">
+        {{-- Background Media --}}
+        <div class="absolute inset-0 z-0">
+            @if(asset('asset/backgroundvideo3.mp4'))
+                <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover">
+                    <source src="{{ asset('asset/backgroundvideo3.mp4') }}" type="video/mp4">
+                </video>
+            @else
+                <img src="https://images.pexels.com/photos/302902/pexels-photo-302902.jpeg" 
+                     class="absolute inset-0 w-full h-full object-cover" 
+                     alt="Mera Coffee Background">
+            @endif
+            <div class="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
+        </div>
 
-    {{-- 3. Top Picks --}}
-    <section class="py-2 overflow-hidden">
-        <div class="container mx-auto px-4 max-w-7xl">
-            <x-featured-menu title="Popular orders" :items="$featuredItems ?? []" />
+        <div class="container mx-auto px-6 relative z-10 max-w-7xl">
+            <div class="max-w-4xl space-y-8">
+                <div class="space-y-4">
+                    <p class="text-amber-400 text-sm font-black uppercase tracking-[0.3em]">
+                        Best Coffee Shop around Kanchis
+                    </p>
+                    <h1 class="text-white text-5xl md:text-8xl font-black leading-[1.1] tracking-tight">
+                        Wee Catering & <br/>
+                        <span class="text-amber-500">Cozy Coffee</span> Shop
+                    </h1>
+                </div>
+                
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://maps.google.com" 
+                       class="px-10 py-5 bg-white text-black text-sm font-black rounded-2xl shadow-premium hover:shadow-hover hover:-translate-y-1 transition-all">
+                        Get Directions
+                    </a>
+                    <a href="/menu" 
+                       class="px-10 py-5 bg-white/10 backdrop-blur-md text-white text-sm font-black rounded-2xl border border-white/20 hover:bg-white/20 transition-all">
+                        View Menu
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
-    {{-- 4. Gallery --}}
-    @php
-        $slug = 'best-foods-around-bole';
-        $title = null;
-    @endphp
+    {{-- 3. Top Picks / Popular Orders --}}
+    <section class="py-24 bg-white overflow-hidden">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="flex flex-col md:flex-row justify-between items-end gap-8 mb-16 px-2">
+                <div class="space-y-2">
+                    <p class="text-amber-600 text-[10px] font-black uppercase tracking-widest">Customer Favorites</p>
+                    <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tight">Popular Orders</h2>
+                </div>
+                <a href="/menu" class="text-gray-900 font-black text-sm uppercase tracking-widest border-b-2 border-amber-500 pb-1 hover:text-amber-600 transition">
+                    Explroe Full Menu
+                </a>
+            </div>
+            
+            <x-featured-menu title="" :items="$featuredItems ?? []" />
+        </div>
+    </section>
 
-    <x-gallery :title="$title" :slug="$slug" />
+    {{-- 4. Our Story Section --}}
+    <section class="py-24 bg-gray-50 overflow-hidden">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="relative group">
+                    <div class="absolute -inset-4 bg-amber-500/10 rounded-[40px] rotate-2 transition group-hover:rotate-0"></div>
+                    <div class="relative rounded-[40px] overflow-hidden shadow-premium aspect-[4/5] lg:aspect-auto lg:h-[600px]">
+                        <img src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg" 
+                             class="w-full h-full object-cover" 
+                             alt="The Mera Coffee Story">
+                    </div>
+                </div>
+                
+                <div class="space-y-8">
+                    <div class="space-y-4">
+                        <p class="text-amber-600 text-[10px] font-black uppercase tracking-widest">Our Heritage</p>
+                        <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tight leading-tight">
+                            The Mera Coffee <span class="text-amber-500 underline decoration-gray-200 underline-offset-8">Story</span>
+                        </h2>
+                    </div>
+                    
+                    <p class="text-lg text-gray-600 leading-relaxed font-medium">
+                        What started as a small dream in Bisrate Gebriel is now a community hub. We believe in slow-roasting, sustainable sourcing, and providing a workspace that feels like your own living room. No shortcuts. No gimmicks. Just real ingredients and unforgettable flavors.
+                    </p>
 
-    {{-- 5. Rest of your sections --}}
-    {{-- <x-section :reversed="true" subtitle="piza" title="America's Neighborhood Pizzeria"
-        description="At Metro Pizza, we honor the great traditions of America's landmark Pizzerias. Our dough is made fresh each day from the finest wheat."
-        image="https://lh3.googleusercontent.com/aida-public/AB6AXuARPAXMGLgaxHChxitlh1R0BdSv61FnICS1IuNE6GALPwBWZ_b663ifzsygE-nNGOG2rhmWDzwbqZv0eQGbSrtvfx-CI_IOZrAOFlJRpqMULv1gg8S1cZ3yco5ekStdsFh6Oru6qwFtRqG4ACAjr_YPnxMtN5f6TUitBdj3ryBlyi1Ceh722ngXbE0b0kQnxX9XRKAJcahy9K6nl_Wyv-V3FYW7VqVTWX3vSNdYvzhy4vV9f2a4aQiC1K5cC1We712q4w7nmvZD2ok"
-        buttonText="Request Catering" :buttonUrl="'/menu2.html'" /> --}}
+                    <div class="pt-4">
+                        <a href="/about" 
+                           class="inline-flex items-center gap-4 bg-black text-white px-10 py-5 rounded-2xl text-sm font-black shadow-premium hover:shadow-hover hover:-translate-y-1 transition-all">
+                            Read Our Full Story
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    {{-- 5. Gallery --}}
+    <section class="py-24 bg-white overflow-hidden">
+        <x-gallery title="Captured Moments" slug="best-foods-around-bole" />
+    </section>
+
+    {{-- 6. Social & FAQ --}}
     <x-testimonials />
+    
+    <section class="py-24 bg-gray-50 overflow-hidden">
+        <div class="container mx-auto px-6 max-w-5xl">
+            <div class="text-center space-y-4 mb-20">
+                <p class="text-amber-600 text-[10px] font-black uppercase tracking-widest">Have Questions?</p>
+                <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tight">Frequently Asked</h2>
+            </div>
+            <x-faq :items="$faqs ?? []" />
+        </div>
+    </section>
 
-    <x-faq :items="$faqs ?? []" />
     <x-locations />
-
-    {{-- <x-section-main backgroundImage="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg">
-        <x-banner 
-        image="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg" 
-        title="The Mera Coffee Story"
-        description="What started as a small dream in Bisrate Gebriel is now a community hub. We believe in slow-roasting, sustainable sourcing, and providing a workspace that feels like your own living room."
-        buttonText="Read Our Full Story" 
-        buttonUrl="/about" />
-    </x-section-main> --}}
-    {{-- <x-banner-child
-        image="https://mattengas.com/pluto-images/funnel/images/05923b92-49f8-48a8-a6d1-7e2e8442625a?w=560&h=560&fit=cover"
-        title="Mera's Story" signature="The Mera Coffee Team"
-        content="We’re Matt and Enga—the pizza-loving duo behind Mattenga’s!  What started as a simple dream is now multiple locations across SAN ANTONIO. /n No shortcuts. No gimmicks. Just real ingredients and unforgettable flavors.Thanks for sharing your pizza cravings with us! Let’s eat! 🍕"
-        buttonText="Visit Us Today" buttonUrl="/locations" />
-    <x-banner-main backgroundImage="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg"
-        subtitle="Our Craft">
-        <x-banner-child
-            image="https://mattengas.com/pluto-images/funnel/images/05923b92-49f8-48a8-a6d1-7e2e8442625a?w=560&h=560&fit=cover"
-            title="Mera's Story" signature="The Mera Coffee Team"
-            content="We’re Matt and Enga—the pizza-loving duo behind Mattenga’s!  What started as a simple dream is now multiple locations across SAN ANTONIO. /n No shortcuts. No gimmicks. Just real ingredients and unforgettable flavors.Thanks for sharing your pizza cravings with us! Let’s eat! 🍕"
-            buttonText="Visit Us Today" buttonUrl="/locations" />
-    </x-banner-main> --}}
-
 
 </x-layouts.app-main>

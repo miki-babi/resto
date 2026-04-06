@@ -30,6 +30,12 @@ class PastryItemOrdersTable
                     ->sortable(),
                 TextColumn::make('pickup_period')
                     ->badge(),
+                TextColumn::make('pickup_date')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('pickup_time')
+                    ->time('H:i')
+                    ->sortable(),
                 TextColumn::make('delivery_phone')
                     ->searchable(),
                 TextColumn::make('delivery_address')

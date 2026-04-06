@@ -9,6 +9,7 @@
         "php": "^8.2",
         "filament/filament": "^5.0",
         "filament/spatie-laravel-media-library-plugin": "^5.0",
+        "laravel/ai": "^0.4.3",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "livewire/blaze": "^1.0",
@@ -16,6 +17,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "laravel/boost": "^2.4",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",

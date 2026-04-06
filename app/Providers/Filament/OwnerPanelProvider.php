@@ -20,7 +20,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Openplain\FilamentShadcnTheme\Color;
 
-
 class OwnerPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -40,8 +39,8 @@ class OwnerPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                // AccountWidget::class,
+                // FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

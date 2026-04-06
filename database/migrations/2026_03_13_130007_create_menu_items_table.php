@@ -26,6 +26,7 @@ return new class extends Migration
             $table->decimal('price', 8, 2);
 
             $table->boolean('is_available')->default(true);
+            $table->boolean('preorder_available')->default(false);
             $table->boolean('is_featured')->default(false);
 
             $table->integer('sort_order')->default(0);

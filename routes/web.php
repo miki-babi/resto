@@ -1,15 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\PreorderController;
 use App\Models\Feedback;
 use App\Models\FeedbackLink;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 
 Route::get('/storage', function () {
     Artisan::call('storage:link');
+
     return redirect()->back();
 })->name('storage');
 
@@ -19,6 +23,13 @@ Route::get('/catering', [LandingController::class, 'catering'])->name('catering'
 Route::get('/catering/request', [LandingController::class, 'cateringRequest'])->name('catering.request.page');
 Route::post('/catering/request', [LandingController::class, 'submitCateringRequest'])->name('catering.request');
 
+Route::get('/preorder-menu', [PreorderController::class, 'showMenuPage'])->name('preorder.menu');
+Route::post('/preorder-menu', [PreorderController::class, 'submitMenu'])->name('preorder.menu.submit');
+Route::get('/preorder-menu/confirmation/{preOrder}', [PreorderController::class, 'showMenuConfirmation'])
+    ->name('preorder.menu.confirmation');
+
+Route::get('/preorder-cake', [PreorderController::class, 'showCakePage'])->name('preorder.cake');
+Route::post('/preorder-cake', [PreorderController::class, 'submitCake'])->name('preorder.cake.submit');
 
 Route::get('/catering2', function () {
     return view('catering');
@@ -30,17 +41,18 @@ Route::group(['prefix' => '{lang}', 'where' => ['lang' => 'en|am']], function ()
     })->name('catering2.localized');
 });
 
-
-
 Route::get('/feedback/{id}', function ($id) {
     try {
         $feedback = FeedbackLink::findOrFail($id);
+
         return view('pages.feedback', compact('feedback'));
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+    } catch (ModelNotFoundException $e) {
         Log::error("Feedback link not found: ID {$id}");
+
         return redirect('/')->withErrors('Feedback link not found.');
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         Log::error("Error accessing feedback link: {$e->getMessage()}");
+
         return redirect('/')->withErrors('Something went wrong. Please try again.');
     }
 })->name('feedback.show');
@@ -81,19 +93,18 @@ Route::post('/feedback/{id}', function (Request $request, $id) {
         Log::info("Feedback submitted: ID {$feedback->id}, Stars: {$feedback->stars}, Complaint: {$feedback->complaint}");
 
         return redirect()->back()->with('success', 'Thank you for your feedback!');
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+    } catch (ModelNotFoundException $e) {
         Log::error("Feedback link not found: ID {$id}");
+
         return redirect()->back()->withErrors('Feedback link not found.');
-    } catch (\Illuminate\Validation\ValidationException $e) {
+    } catch (ValidationException $e) {
         return redirect()->back()->withErrors($e->errors())->withInput();
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         Log::error("Error submitting feedback: {$e->getMessage()}");
+
         return redirect()->back()->withErrors('Something went wrong. Please try again.');
     }
 })->name('feedback.submit');
-
-
-
 
 Route::get('/{slug}', [LandingController::class, 'page'])
     ->name('page')

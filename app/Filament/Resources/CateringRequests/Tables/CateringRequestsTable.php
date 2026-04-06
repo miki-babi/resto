@@ -14,8 +14,9 @@ class CateringRequestsTable
     {
         return $table
             ->columns([
-                TextColumn::make('catering_package_id')
-                    ->numeric()
+                TextColumn::make('package.name')
+                    ->label('Package')
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),

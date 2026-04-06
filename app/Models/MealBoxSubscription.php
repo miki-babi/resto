@@ -7,19 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class MealBoxSubscription extends Model
 {
     //
-     protected $fillable = [
+    protected $fillable = [
         'customer_id',
         'meal_box_plan_id',
         'start_date',
         'end_date',
         'status',
         'delivery_time',
-        'address'
+        'address',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'delivery_time' => 'array',
     ];
 
     public function plan()

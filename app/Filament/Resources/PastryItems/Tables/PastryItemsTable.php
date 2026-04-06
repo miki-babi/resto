@@ -20,7 +20,13 @@ class PastryItemsTable
                 TextColumn::make('price')
                     ->money()
                     ->sortable(),
+                TextColumn::make('loyalty_points')
+                    ->label('Loyalty Points')
+                    ->numeric()
+                    ->sortable(),
                 IconColumn::make('is_active')
+                    ->boolean(),
+                IconColumn::make('preorder_available')
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()

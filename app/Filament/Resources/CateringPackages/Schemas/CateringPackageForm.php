@@ -3,13 +3,12 @@
 namespace App\Filament\Resources\CateringPackages\Schemas;
 
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-
 
 class CateringPackageForm
 {
@@ -18,7 +17,7 @@ class CateringPackageForm
         return $schema
             ->components([
                 TextInput::make('name')->required(),
-                Textarea::make('description'),
+                RichEditor::make('description'),
                 TextInput::make('min_guests')->numeric()->required(),
 
                 TextInput::make('price_per_person')

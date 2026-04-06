@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class PastryItemOrder extends Model
 {
@@ -18,6 +18,8 @@ class PastryItemOrder extends Model
         'pickup_day_of_week',
         'pickup_hour_slot',
         'pickup_period',
+        'pickup_date',
+        'pickup_time',
 
         'delivery_phone',
         'delivery_address',

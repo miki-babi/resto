@@ -30,6 +30,12 @@ class PastryItemOrderForm
                 Select::make('pickup_period')
                     ->options(['day' => 'Day', 'night' => 'Night'])
                     ->default(null),
+                TextInput::make('pickup_date')
+                    ->type('date')
+                    ->default(null),
+                TextInput::make('pickup_time')
+                    ->type('time')
+                    ->default(null),
                 TextInput::make('delivery_phone')
                     ->tel()
                     ->default(null),
@@ -41,13 +47,13 @@ class PastryItemOrderForm
                     ->prefix('$'),
                 Select::make('status')
                     ->options([
-            'pending' => 'Pending',
-            'confirmed' => 'Confirmed',
-            'preparing' => 'Preparing',
-            'ready' => 'Ready',
-            'completed' => 'Completed',
-            'cancelled' => 'Cancelled',
-        ])
+                        'pending' => 'Pending',
+                        'confirmed' => 'Confirmed',
+                        'preparing' => 'Preparing',
+                        'ready' => 'Ready',
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                    ])
                     ->default('pending')
                     ->required(),
                 Select::make('payment_status')

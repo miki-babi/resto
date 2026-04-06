@@ -17,7 +17,8 @@ class MenuItemsTable
             ->columns([
                 TextColumn::make('menu_category_id')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('slug')
@@ -25,7 +26,13 @@ class MenuItemsTable
                 TextColumn::make('price')
                     ->money()
                     ->sortable(),
+                TextColumn::make('loyalty_points')
+                    ->label('Loyalty Points')
+                    ->numeric()
+                    ->sortable(),
                 IconColumn::make('is_available')
+                    ->boolean(),
+                IconColumn::make('preorder_available')
                     ->boolean(),
                 IconColumn::make('is_featured')
                     ->boolean(),

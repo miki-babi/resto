@@ -20,14 +20,14 @@
         </style>
     @endpush
 
-    <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10" x-data="{
+    {{-- Modern Menu Page --}}
+    <main class="flex-1 bg-white" x-data="{
         activeCategory: '',
         init() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         this.activeCategory = entry.target.id;
-                        // Scroll the category bar to keep the active pill visible
                         const pill = document.querySelector(`a[href='#${entry.target.id}']`);
                         if (pill) {
                             const container = document.getElementById('category-scroll-container');
@@ -51,71 +51,61 @@
         }
     }">
 
-        <!-- Horizontal Category Selector -->
-        <div
-            class="sticky top-[72px] z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-4 mb-8 border-b border-slate-100 dark:border-slate-800">
-            <div id="category-scroll-container" class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                <!-- Search Icon -->
-                {{-- <button class="flex-shrink-0 w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button> --}}
-
-                @foreach ($menuCategories ?? [] as $category)
-                    @php
-                        $slug = Str::slug($category['name']);
-                        // Map common categories to emojis if they don't have one
-$emoji = '';
-$name = $category['name'];
-if (stripos($name, 'taco') !== false) {
-    $emoji = ' 🌮';
-} elseif (stripos($name, 'burrito') !== false) {
-    $emoji = ' 🌯';
-} elseif (stripos($name, 'drink') !== false) {
-    $emoji = ' 🥤';
-} elseif (stripos($name, 'coffee') !== false) {
-    $emoji = ' ☕';
-} elseif (stripos($name, 'dessert') !== false) {
-    $emoji = ' 🍰';
-} elseif (stripos($name, 'burger') !== false) {
-    $emoji = ' 🍔';
-} elseif (stripos($name, 'pizza') !== false) {
-    $emoji = ' 🍕';
-} elseif (stripos($name, 'salad') !== false) {
-    $emoji = ' 🥗';
-                        }
-                    @endphp
-                    <a href="#{{ $slug }}"
-                        @click.prevent="document.getElementById('{{ $slug }}').scrollIntoView({ behavior: 'smooth' }); activeCategory = '{{ $slug }}'"
-                        :class="activeCategory === '{{ $slug }}' ?
-                            'bg-slate-900 text-white dark:bg-white dark:text-slate-900' :
-                            'bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-white dark:border-slate-700'"
-                        class="flex-shrink-0 px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-200 shadow-sm">
-                        {{ $category['name'] }}{{ $emoji }}
-                    </a>
-                @endforeach
+        <!-- Premium Floating Category Selector -->
+        <div class="sticky top-[72px] z-40 bg-white/60 backdrop-blur-xl border-b border-gray-100 py-4 shadow-sm">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div id="category-scroll-container" class="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-hide">
+                    @foreach ($menuCategories ?? [] as $category)
+                        @php
+                            $slug = Str::slug($category['name']);
+                        @endphp
+                        <a href="#{{ $slug }}"
+                            @click.prevent="document.getElementById('{{ $slug }}').scrollIntoView({ behavior: 'smooth' }); activeCategory = '{{ $slug }}'"
+                            :class="activeCategory === '{{ $slug }}' ?
+                                'bg-black text-white shadow-premium scale-105' :
+                                'bg-gray-50 text-gray-400 hover:text-gray-900 border border-transparent'"
+                            class="flex-shrink-0 px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300">
+                            {{ $category['name'] }}
+                        </a>
+                    @endforeach
+                </div>
             </div>
         </div>
 
-        <!-- Popular Items Section -->
-        <section class="mb-16">
-            <x-featured-menu title="Popular orders" :items="$featuredItems ?? []" />
-        </section>
+        <div class="container mx-auto px-6 max-w-7xl pt-16">
+            <!-- Popular Items Section -->
+            <section class="mb-24">
+                <div class="mb-12 px-2">
+                    <p class="text-amber-600 text-[10px] font-black uppercase tracking-widest">customer top picks</p>
+                    <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tight leading-tight">Popular
+                        Orders</h2>
+                </div>
+                <x-featured-menu title="" :items="$featuredItems ?? []" />
+            </section>
 
-        <!-- Menu Sections -->
-        @forelse(($menuCategories ?? []) as $category)
-            <div id="{{ Str::slug($category['name']) }}" class="scroll-mt-32 menu-section">
-                <x-menu :title="$category['name']" :items="$category['items']" />
+            <!-- Menu Sections -->
+            <div class="space-y-32 mb-32">
+                @forelse(($menuCategories ?? []) as $category)
+                    <div id="{{ Str::slug($category['name']) }}" class="scroll-mt-40 menu-section">
+                        {{-- Custom Section Header for Menu --}}
+                        <div class="flex items-end justify-between gap-8 mb-12 px-2 border-b border-gray-100 pb-8">
+                            <div class="space-y-2">
+                                <h3 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+                                    {{ $category['name'] }}</h3>
+                            </div>
+
+                        </div>
+
+                        <x-menu :title="''" :items="$category['items']" />
+                    </div>
+                @empty
+                    <div class="text-center py-24 bg-gray-50 rounded-[40px] border border-dashed border-gray-200">
+                        <p class="text-gray-400 font-bold">No menu categories available yet.</p>
+                    </div>
+                @endforelse
             </div>
-        @empty
-            <div class="text-slate-500 dark:text-slate-400">
-                No menu categories available yet.
-            </div>
-        @endforelse
+        </div>
     </main>
-    <!-- END: AwardsSection -->
-
 
     <x-locations />
 

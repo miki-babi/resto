@@ -12,13 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pastry_items', function (Blueprint $table) {
-    $table->id();
-    $table->string('name');
-    $table->text('description')->nullable();
-    $table->decimal('price', 10, 2)->nullable(); // default reference price
-    $table->boolean('is_active')->default(true);
-    $table->timestamps();
-});
+            $table->id();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->decimal('price', 10, 2)->nullable(); // default reference price
+            $table->boolean('is_active')->default(true);
+            $table->boolean('preorder_available')->default(false);
+            $table->timestamps();
+        });
     }
 
     /**

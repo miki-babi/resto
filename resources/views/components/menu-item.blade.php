@@ -39,23 +39,33 @@
     $cardExcerpt = $excerpt ?: $description;
 @endphp
 
-<button
-    type="button"
+<div
     x-data
     @click="$dispatch('open-menu-modal', {{ json_encode(['title' => $title, 'price' => $price, 'description' => $description, 'images' => $resolvedImages, 'variants' => $variants, 'addons' => $addons]) }})"
-    class="relative flex aspect-square overflow-visible cursor-pointer focus:outline-none group"
+    class="group cursor-pointer"
 >
-    <div class="absolute inset-0 overflow-hidden rounded-3xl bg-slate-100 dark:bg-slate-800 transition-transform duration-300 group-hover:scale-[1.01] md:group-hover:scale-[1.02] shadow-sm group-hover:shadow-md">
+    {{-- Image Container --}}
+    <div class="relative aspect-square overflow-hidden rounded-[32px] bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:-translate-y-1">
         <img 
             src="{{ $thumbnail }}" 
             alt="{{ $alt }}" 
-            class="w-full h-full object-cover" 
+            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
             loading="lazy" 
         />
-        {{-- Overlay for text on hover or subtle always-on info --}}
-        <div class="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <h3 class="text-white font-bold text-sm truncate">{{ $title }}</h3>
-            <p class="text-white/80 text-xs font-semibold">{{ $price }}</p>
+        
+        {{-- Floating Details Indicator --}}
+        <div class="absolute bottom-3 right-3 h-10 w-10 flex items-center justify-center rounded-2xl bg-white/90 backdrop-blur shadow-lg text-gray-900 opacity-0 transform translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+            </svg>
         </div>
     </div>
-</button>
+
+    {{-- Content --}}
+    <div class="mt-4 px-2 space-y-1">
+        <div class="flex justify-between items-start gap-4">
+            <h3 class="text-[13px] font-black text-gray-900 leading-tight tracking-tight uppercase group-hover:text-amber-600 transition-colors duration-300">{{ $title }}</h3>
+        </div>
+        <p class="text-[11px] font-bold text-gray-400 font-mono">{{ $price }}</p>
+    </div>
+</div>

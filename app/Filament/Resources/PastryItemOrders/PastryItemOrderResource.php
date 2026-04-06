@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PastryItemOrders;
 use App\Filament\Resources\PastryItemOrders\Pages\CreatePastryItemOrder;
 use App\Filament\Resources\PastryItemOrders\Pages\EditPastryItemOrder;
 use App\Filament\Resources\PastryItemOrders\Pages\ListPastryItemOrders;
+use App\Filament\Resources\PastryItemOrders\RelationManagers\ItemsRelationManager;
 use App\Filament\Resources\PastryItemOrders\Schemas\PastryItemOrderForm;
 use App\Filament\Resources\PastryItemOrders\Tables\PastryItemOrdersTable;
 use App\Models\PastryItemOrder;
@@ -19,12 +20,16 @@ class PastryItemOrderResource extends Resource
 {
     protected static ?string $model = PastryItemOrder::class;
 
-            protected static string | UnitEnum | null $navigationGroup = 'Pastry';
-
+    protected static string|UnitEnum|null $navigationGroup = 'Pastry';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'pastryitemorder';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -40,8 +45,8 @@ class PastryItemOrderResource extends Resource
     {
         return [
             //
-                    // RelationManagers\OrderItemsRelationManager::class,
-                    \App\Filament\Resources\PastryItemOrders\RelationManagers\ItemsRelationManager::class,
+            // RelationManagers\OrderItemsRelationManager::class,
+            ItemsRelationManager::class,
 
         ];
     }
