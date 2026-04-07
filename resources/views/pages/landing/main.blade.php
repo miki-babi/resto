@@ -1,4 +1,5 @@
 <x-layouts.app-main>
+    {{-- @blaze --}}
     @php
         $menuUrl = \App\Filament\Resources\Pages\PageResource::menuUrl();
         $aboutUrl = \App\Filament\Resources\Pages\PageResource::pageUrl('about');
@@ -82,7 +83,7 @@
                     <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tight">Popular Orders</h2>
                 </div>
                 <a href="{{ $menuUrl }}" class="text-gray-900 font-black text-sm uppercase tracking-widest border-b-2 border-amber-500 pb-1 hover:text-amber-600 transition">
-                    Explroe Full Menu
+                    Explore Full Menu
                 </a>
             </div>
             

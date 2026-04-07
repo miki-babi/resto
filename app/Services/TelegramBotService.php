@@ -82,6 +82,30 @@ class TelegramBotService
         ];
     }
 
+    /**
+     * @return array{chat_id: int|string, text: string, reply_markup: array<string, mixed>}
+     */
+    public function phoneRequestMessagePayload(int|string $chatId): array
+    {
+        return [
+            'chat_id' => $chatId,
+            'text' => 'Please share your phone number to continue.',
+            'reply_markup' => [
+                'keyboard' => [
+                    [
+                        [
+                            'text' => 'Share phone number',
+                            'request_contact' => true,
+                        ],
+                    ],
+                ],
+                'resize_keyboard' => true,
+                'is_persistent' => false,
+                'one_time_keyboard' => true,
+            ],
+        ];
+    }
+
     public function resolveFeatureFromMessage(?string $messageText): ?string
     {
         if ($messageText === null) {
