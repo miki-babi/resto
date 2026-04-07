@@ -25,6 +25,18 @@ Route::get('/menu', [LandingController::class, 'menu'])->name(PageResource::menu
 Route::get('/catering', [LandingController::class, 'catering'])->name('catering');
 Route::get('/catering/request', [LandingController::class, 'cateringRequest'])->name('catering.request.page');
 Route::post('/catering/request', [LandingController::class, 'submitCateringRequest'])->name('catering.request');
+Route::get('/mealbox-subscription', function () {
+    return redirect()->route('preorder.menu');
+})->name('mealbox.subscription');
+Route::get('/feedback', function () {
+    $feedbackLink = FeedbackLink::query()->latest('id')->first();
+
+    if (! $feedbackLink) {
+        return redirect()->route(PageResource::homeRouteName());
+    }
+
+    return redirect()->route('feedback.show', ['id' => $feedbackLink->id]);
+})->name('feedback.page');
 
 Route::get('/preorder-menu', [PreorderController::class, 'showMenuPage'])->name('preorder.menu');
 Route::post('/preorder-menu', [PreorderController::class, 'submitMenu'])->name('preorder.menu.submit');
@@ -39,9 +51,9 @@ Route::post('/telegram/webhook/{telegramConfig}', [TelegramWebhookController::cl
     ->whereNumber('telegramConfig')
     ->withoutMiddleware([ValidateCsrfToken::class]);
 
-Route::get('/catering2', function () {
-    return view('catering');
-})->name('catering2');
+// Route::get('/catering2', function () {
+//     return view('catering');
+// })->name('catering2');
 
 Route::group(['prefix' => '{lang}', 'where' => ['lang' => 'en|am']], function () {
     Route::get('/catering2', function () {

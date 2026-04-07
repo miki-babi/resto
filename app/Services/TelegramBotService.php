@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Filament\Resources\Pages\PageResource;
 use App\Models\TelegramConfig;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -44,28 +45,20 @@ class TelegramBotService
 
     /**
      * @return array{
-     *     keyboard: array<int, array<int, array<string, mixed>>>,
-     *     resize_keyboard: bool,
-     *     is_persistent: bool,
-     *     one_time_keyboard: bool
+     *     inline_keyboard: array<int, array<int, array<string, string>>>
      * }
      */
     public function mainReplyKeyboard(?TelegramConfig $telegramConfig = null): array
     {
-        $miniAppUrl = trim((string) ($telegramConfig?->miniapp_url ?? ''));
-
         return [
-            'keyboard' => [
-                [$this->orderOnlineButton($miniAppUrl)],
-                [['text' => self::FEATURE_LABELS[self::FEATURE_CAKE_AND_PASTRY_PREORDER]]],
-                [['text' => self::FEATURE_LABELS[self::FEATURE_CATERING_REQUEST]]],
-                [['text' => self::FEATURE_LABELS[self::FEATURE_MEALBOX_SUBSCRIPTION]]],
-                [['text' => self::FEATURE_LABELS[self::FEATURE_FEEDBACK]]],
-                [['text' => self::FEATURE_LABELS[self::FEATURE_MENU]]],
+            'inline_keyboard' => [
+                [$this->featureUrlButton(self::FEATURE_ORDER_ONLINE)],
+                [$this->featureUrlButton(self::FEATURE_CAKE_AND_PASTRY_PREORDER)],
+                [$this->featureUrlButton(self::FEATURE_CATERING_REQUEST)],
+                [$this->featureUrlButton(self::FEATURE_MEALBOX_SUBSCRIPTION)],
+                [$this->featureUrlButton(self::FEATURE_FEEDBACK)],
+                [$this->featureUrlButton(self::FEATURE_MENU)],
             ],
-            'resize_keyboard' => true,
-            'is_persistent' => true,
-            'one_time_keyboard' => false,
         ];
     }
 
@@ -167,22 +160,28 @@ class TelegramBotService
         return trim($withNormalizedHyphenSpacing ?? $normalized);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function orderOnlineButton(string $miniAppUrl): array
+    private function featureRouteUrl(string $feature): string
     {
-        $button = [
-            'text' => self::FEATURE_LABELS[self::FEATURE_ORDER_ONLINE],
+        return match ($feature) {
+            self::FEATURE_ORDER_ONLINE => route('preorder.menu'),
+            self::FEATURE_CAKE_AND_PASTRY_PREORDER => route('preorder.cake'),
+            self::FEATURE_CATERING_REQUEST => route('catering.request.page'),
+            self::FEATURE_MEALBOX_SUBSCRIPTION => route('mealbox.subscription'),
+            self::FEATURE_FEEDBACK => route('feedback.page'),
+            self::FEATURE_MENU => route(PageResource::menuRouteName()),
+            default => route(PageResource::homeRouteName()),
+        };
+    }
+
+    /**
+     * @return array{text: string, url: string}
+     */
+    private function featureUrlButton(string $feature): array
+    {
+        return [
+            'text' => (string) (self::FEATURE_LABELS[$feature] ?? ''),
+            'url' => $this->featureRouteUrl($feature),
         ];
-
-        if ($miniAppUrl !== '') {
-            $button['web_app'] = [
-                'url' => $miniAppUrl,
-            ];
-        }
-
-        return $button;
     }
 
     /**

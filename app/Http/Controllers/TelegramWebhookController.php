@@ -66,7 +66,7 @@ class TelegramWebhookController extends Controller
             $this->telegramBotService->sendMessage(
                 telegramConfig: $telegramConfig,
                 chatId: $chatId,
-                text: $this->featureResponseText($feature, $telegramConfig),
+                text: $this->featureResponseText($feature),
                 replyMarkup: $this->telegramBotService->mainReplyKeyboard($telegramConfig),
             );
         } catch (Throwable $throwable) {
@@ -80,18 +80,14 @@ class TelegramWebhookController extends Controller
         return response()->json(['ok' => true]);
     }
 
-    private function featureResponseText(string $feature, TelegramConfig $telegramConfig): string
+    private function featureResponseText(string $feature): string
     {
-        $miniAppUrl = trim((string) ($telegramConfig->miniapp_url ?? ''));
-
         return match ($feature) {
-            TelegramBotService::FEATURE_ORDER_ONLINE => $miniAppUrl !== ''
-                ? "Order online here: {$miniAppUrl}"
-                : 'Order online link is not configured yet.',
-            TelegramBotService::FEATURE_CAKE_AND_PASTRY_PREORDER => 'Cake and pastry preorder is available. Please share your preferred date and quantity.',
+            TelegramBotService::FEATURE_ORDER_ONLINE => 'Order online here: '.route('preorder.menu'),
+            TelegramBotService::FEATURE_CAKE_AND_PASTRY_PREORDER => 'Cake and pastry preorder here: '.route('preorder.cake'),
             TelegramBotService::FEATURE_CATERING_REQUEST => 'Please use our catering request page: '.route('catering.request.page'),
-            TelegramBotService::FEATURE_MEALBOX_SUBSCRIPTION => 'Mealbox subscription is available. Please message us with your preferred plan and delivery area.',
-            TelegramBotService::FEATURE_FEEDBACK => 'We would love your feedback. Please tell us your experience here.',
+            TelegramBotService::FEATURE_MEALBOX_SUBSCRIPTION => 'Mealbox subscription page: '.route('mealbox.subscription'),
+            TelegramBotService::FEATURE_FEEDBACK => 'Share feedback here: '.route('feedback.page'),
             TelegramBotService::FEATURE_MENU => 'Browse our menu here: '.route(PageResource::menuRouteName()),
             default => 'Please choose one of the keyboard buttons.',
         };
