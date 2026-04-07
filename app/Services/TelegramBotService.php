@@ -171,7 +171,7 @@ class TelegramBotService
         return match ($feature) {
             self::FEATURE_ORDER_ONLINE => route('preorder.menu'),
             self::FEATURE_CAKE_AND_PASTRY_PREORDER => route('preorder.cake'),
-            self::FEATURE_CATERING_REQUEST => route('catering.request.page'),
+            self::FEATURE_CATERING_REQUEST => route('catering'),
             self::FEATURE_MEALBOX_SUBSCRIPTION => route('mealbox.subscription'),
             self::FEATURE_FEEDBACK => route('feedback.page'),
             self::FEATURE_MENU => route(PageResource::menuRouteName()),
