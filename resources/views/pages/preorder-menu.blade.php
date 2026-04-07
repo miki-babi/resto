@@ -14,11 +14,18 @@
         }
     </style>
     @push('meta')
-        <meta name="description" content="Place a preorder for menu items.">
-        <meta property="og:title" content="Menu Preorder">
+        <meta name="description" content="{{ ($preorderSource ?? 'menu') === 'cake' ? 'Place a preorder for cakes and pastries.' : 'Place a preorder for menu items.' }}">
+        <meta property="og:title" content="{{ ($preorderSource ?? 'menu') === 'cake' ? 'Cake & Pastry Preorder' : 'Menu Preorder' }}">
     @endpush
 
     @php
+        $isCakePreorder = ($preorderSource ?? 'menu') === 'cake';
+        $submitRouteName = $preorderSubmitRoute ?? 'preorder.menu.submit';
+        $stepOneLabel = $isCakePreorder ? 'Pastries' : 'Menu';
+        $pageTitle = $isCakePreorder ? 'Cake & Pastry Preorder' : 'Menu Preorder';
+        $searchPlaceholder = $isCakePreorder ? 'Search for pastries...' : 'Search for items...';
+        $pastryItems = collect($pastryItems ?? [])->values();
+
         $popularItems = collect($menuCategories ?? [])
             ->flatMap(fn ($category) => $category->items)
             ->take(10)
@@ -67,7 +74,7 @@
 
             <form
                 method="POST"
-                action="{{ route('preorder.menu.submit') }}"
+                action="{{ route($submitRouteName) }}"
                 data-pickup-availability='@json($pickupAvailability ?? [])'
                 data-menu-items='@json($menuItemsCatalog ?? [])'
                 data-old-location="{{ old('pickup_location_id') }}"
@@ -82,7 +89,7 @@
                         ...pickupSelectorFromEl($el),
                         modalOpen: false,
                         selectedItem: null,
-                        activeCategory: 'popular',
+                        activeCategory: '{{ $isCakePreorder ? 'pastries' : 'popular' }}',
                         openModal(id) {
                             this.selectedItem = this.menuItemsMap[String(id)];
                             this.modalOpen = true;
@@ -113,6 +120,17 @@
                 <input type="hidden" name="pickup_location_id" :value="selectedLocation">
                 <input type="hidden" name="pickup_date" :value="selectedDate">
                 <input type="hidden" name="pickup_time" :value="selectedTime">
+                <template x-for="item in menuItems" :key="`qty-${item.id}`">
+                    <input type="hidden" :name="`quantities[${item.id}]`" :value="quantityFor(item.id)">
+                </template>
+                <template x-for="item in menuItems" :key="`variant-${item.id}`">
+                    <input type="hidden" :name="`variant_ids[${item.id}]`" :value="selectedVariants[String(item.id)] || ''">
+                </template>
+                <template x-for="item in menuItems" :key="`addon-${item.id}`">
+                    <template x-for="addonId in ensureAddonSelection(item.id)" :key="`addon-${item.id}-${addonId}`">
+                        <input type="hidden" :name="`addon_ids[${item.id}][]`" :value="addonId">
+                    </template>
+                </template>
 
                 <div class="grid gap-6 lg:grid-cols-[200px_minmax(0,1fr)_340px]">
                     <aside class="hidden lg:block lg:sticky lg:top-24 h-fit border-r border-gray-100 pr-6">
@@ -120,21 +138,30 @@
                             <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Categories</h3>
                         </div>
                         <nav class="space-y-1">
-                            <button type="button" 
-                                    @click="activeCategory = 'popular'; document.getElementById('popular')?.scrollIntoView({ behavior: 'smooth', block: 'start' })"
-                                    class="w-full text-left px-3 py-2.5 text-sm font-bold rounded-xl transition-all"
-                                    :class="activeCategory === 'popular' ? 'bg-black text-white shadow-premium scale-[1.02]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'">
-                                🔥 Popular
-                            </button>
-                            @foreach ($menuCategories as $category)
-                                @php $slug = \Illuminate\Support\Str::slug($category->name); @endphp
+                            @if ($isCakePreorder)
                                 <button type="button"
-                                        @click="activeCategory = '{{ $slug }}'; document.getElementById('category-{{ $slug }}')?.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+                                        @click="activeCategory = 'pastries'; document.getElementById('pastries')?.scrollIntoView({ behavior: 'smooth', block: 'start' })"
                                         class="w-full text-left px-3 py-2.5 text-sm font-bold rounded-xl transition-all"
-                                        :class="activeCategory === '{{ $slug }}' ? 'bg-black text-white shadow-premium scale-[1.02]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'">
-                                    {{ $category->name }}
+                                        :class="activeCategory === 'pastries' ? 'bg-black text-white shadow-premium scale-[1.02]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'">
+                                    Pastries
                                 </button>
-                            @endforeach
+                            @else
+                                <button type="button" 
+                                        @click="activeCategory = 'popular'; document.getElementById('popular')?.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+                                        class="w-full text-left px-3 py-2.5 text-sm font-bold rounded-xl transition-all"
+                                        :class="activeCategory === 'popular' ? 'bg-black text-white shadow-premium scale-[1.02]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'">
+                                    🔥 Popular
+                                </button>
+                                @foreach ($menuCategories as $category)
+                                    @php $slug = \Illuminate\Support\Str::slug($category->name); @endphp
+                                    <button type="button"
+                                            @click="activeCategory = '{{ $slug }}'; document.getElementById('category-{{ $slug }}')?.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+                                            class="w-full text-left px-3 py-2.5 text-sm font-bold rounded-xl transition-all"
+                                            :class="activeCategory === '{{ $slug }}' ? 'bg-black text-white shadow-premium scale-[1.02]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'">
+                                        {{ $category->name }}
+                                    </button>
+                                @endforeach
+                            @endif
                         </nav>
                     </aside>
 
@@ -142,12 +169,12 @@
                         <header class="mb-8">
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                 <div>
-                                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Menu Preorder</h1>
+                                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">{{ $pageTitle }}</h1>
                                     <div class="mt-2 flex items-center gap-4">
                                         <div class="flex items-center gap-2">
                                             <span class="flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold transition-colors"
                                                 :class="step >= 1 ? 'bg-black text-white' : 'bg-gray-200 text-gray-500'">1</span>
-                                            <span class="text-xs font-semibold uppercase tracking-wider" :class="step >= 1 ? 'text-black' : 'text-gray-400'">Menu</span>
+                                            <span class="text-xs font-semibold uppercase tracking-wider" :class="step >= 1 ? 'text-black' : 'text-gray-400'">{{ $stepOneLabel }}</span>
                                         </div>
                                         <div class="h-px w-8" :class="step >= 2 ? 'bg-black' : 'bg-gray-200'"></div>
                                         <div class="flex items-center gap-2">
@@ -183,40 +210,104 @@
                                 <input
                                     type="text"
                                     x-model="search"
-                                    placeholder="Search for items..."
+                                    placeholder="{{ $searchPlaceholder }}"
                                     class="block w-full rounded-2xl border-none bg-gray-100 py-3 pl-10 pr-3 text-sm focus:ring-2 focus:ring-black placeholder:text-gray-500 transition-all font-medium"
                                 />
                             </div>
                         </header>
 
                         <div x-show="step === 1" x-cloak>
-                            {{-- Popular Section --}}
-                            <section id="popular" class="pt-2 mb-12">
-                                <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                                    <svg class="h-5 w-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                    Popular Items
-                                </h2>
-                                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                                    @foreach ($popularItems as $item)
-                                        @include('components.menu-item-card', ['item' => $item])
-                                    @endforeach
-                                </div>
-                            </section>
-
-                            {{-- Categories Sections --}}
-                            @foreach ($menuCategories as $category)
-                                @php $slug = \Illuminate\Support\Str::slug($category->name); @endphp
-                                <section id="category-{{ $slug }}" class="pt-4 mb-12">
-                                    <h2 class="text-xl font-bold text-gray-900 mb-6 capitalize">{{ $category->name }}</h2>
+                            @if ($isCakePreorder)
+                                <section id="pastries" class="pt-2 mb-12">
+                                    <h2 class="text-xl font-bold text-gray-900 mb-6">Pastry Items</h2>
                                     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                                        @foreach ($category->items as $item)
+                                        @forelse ($pastryItems as $item)
+                                            @php
+                                                $image = $item->getFirstMediaUrl('cover_image');
+                                                if (!$image) {
+                                                    $image = $item->getFirstMediaUrl('gallery');
+                                                }
+                                                if (!$image) {
+                                                    $image = 'https://placehold.co/600x600?text=' . urlencode($item->name);
+                                                }
+                                                $plainDescription = trim(strip_tags((string) ($item->description ?? '')));
+                                            @endphp
+
+                                            <article
+                                                data-title="{{ $item->name }}"
+                                                data-description="{{ $plainDescription }}"
+                                                x-show="match($el.dataset.title, $el.dataset.description)"
+                                                class="group flex flex-col h-full bg-white transition-all"
+                                            >
+                                                <div class="relative overflow-hidden rounded-2xl aspect-square bg-gray-50 border border-gray-100">
+                                                    <img
+                                                        src="{{ $image }}"
+                                                        alt="{{ $item->name }}"
+                                                        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                        loading="lazy"
+                                                    >
+                                                    <button
+                                                        type="button"
+                                                        @click="increaseQuantity({{ $item->id }})"
+                                                        class="absolute bottom-2 right-2 h-9 w-9 flex items-center justify-center rounded-xl bg-white shadow-lg text-gray-900 transition-transform hover:scale-110 active:scale-95"
+                                                        :class="quantityFor({{ $item->id }}) > 0 ? 'bg-black text-white' : ''"
+                                                        title="Add {{ $item->name }}"
+                                                    >
+                                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                                                        </svg>
+                                                    </button>
+                                                    <div
+                                                        x-show="quantityFor({{ $item->id }}) > 0"
+                                                        x-transition.scale
+                                                        class="absolute top-2 right-2 h-6 min-w-[24px] px-1.5 flex items-center justify-center rounded-full bg-black text-[10px] font-bold text-white shadow-lg"
+                                                        x-text="quantityFor({{ $item->id }})"
+                                                    ></div>
+                                                </div>
+
+                                                <div class="mt-3 flex flex-col flex-grow">
+                                                    <h3 class="text-sm font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-black transition-colors">
+                                                        {{ $item->name }}
+                                                    </h3>
+                                                    <p class="mt-1 text-xs font-semibold text-gray-500">${{ number_format((float) $item->price, 2) }}</p>
+                                                </div>
+                                            </article>
+                                        @empty
+                                            <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 md:col-span-2">
+                                                No pastry items are currently available for preorder.
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </section>
+                            @else
+                                {{-- Popular Section --}}
+                                <section id="popular" class="pt-2 mb-12">
+                                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                        <svg class="h-5 w-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                        Popular Items
+                                    </h2>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                                        @foreach ($popularItems as $item)
                                             @include('components.menu-item-card', ['item' => $item])
                                         @endforeach
                                     </div>
                                 </section>
-                            @endforeach
+
+                                {{-- Categories Sections --}}
+                                @foreach ($menuCategories as $category)
+                                    @php $slug = \Illuminate\Support\Str::slug($category->name); @endphp
+                                    <section id="category-{{ $slug }}" class="pt-4 mb-12">
+                                        <h2 class="text-xl font-bold text-gray-900 mb-6 capitalize">{{ $category->name }}</h2>
+                                        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                                            @foreach ($category->items as $item)
+                                                @include('components.menu-item-card', ['item' => $item])
+                                            @endforeach
+                                        </div>
+                                    </section>
+                                @endforeach
+                            @endif
                         </div>
 
                         {{-- Step 2: Pickup Details --}}
@@ -409,7 +500,7 @@
                                             class="w-full rounded-2xl bg-black py-5 text-sm font-black text-white shadow-premium transition-all hover:scale-[1.02] active:scale-[0.98] disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none disabled:scale-100">
                                         Review Order
                                     </button>
-                                    <button type="button" @click="backToMenu()" class="w-full rounded-2xl border border-gray-100 py-4 text-sm font-bold text-gray-500 hover:bg-gray-50">Back to Menu</button>
+                                    <button type="button" @click="backToMenu()" class="w-full rounded-2xl border border-gray-100 py-4 text-sm font-bold text-gray-500 hover:bg-gray-50">Back to {{ $stepOneLabel }}</button>
                                 </div>
 
                                 {{-- Step 3 Actions --}}

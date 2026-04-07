@@ -204,7 +204,7 @@ class PreorderController extends Controller
 
     public function showMenuConfirmation(PreOrder $preOrder)
     {
-        abort_unless($preOrder->source_type === 'menu', 404);
+        abort_unless(in_array($preOrder->source_type, ['menu', 'cake'], true), 404);
 
         $preOrder->loadMissing([
             'pickupLocation:id,name,address',
@@ -221,18 +221,55 @@ class PreorderController extends Controller
         $pickupLocations = PickupLocation::query()
             ->where('is_active', true)
             ->orderBy('name')
+            ->with([
+                'hours' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->orderBy('day_of_week')
+                    ->orderBy('period')
+                    ->orderBy('hour_slot'),
+            ])
             ->get(['id', 'name', 'address']);
+
+        $pickupAvailability = $this->buildPickupAvailabilityMap($pickupLocations, 14);
 
         $pastryItems = PastryItem::query()
             ->where('is_active', true)
             ->where('preorder_available', true)
             ->whereNotNull('price')
             ->orderBy('name')
+            ->with('media')
             ->get(['id', 'name', 'description', 'price']);
 
-        return view('pages.preorder-cake', [
+        $menuItemsCatalog = $pastryItems
+            ->map(function (PastryItem $item): array {
+                $imageUrl = (string) ($item->getFirstMediaUrl('cover_image')
+                    ?: $item->getFirstMediaUrl('gallery')
+                    ?: '');
+
+                if ($imageUrl === '') {
+                    $imageUrl = 'https://placehold.co/600x600?text='.urlencode($item->name);
+                }
+
+                return [
+                    'id' => (int) $item->id,
+                    'title' => (string) $item->name,
+                    'price' => (float) $item->price,
+                    'image_url' => $imageUrl,
+                    'variants' => [],
+                    'addons' => [],
+                ];
+            })
+            ->values()
+            ->all();
+
+        return view('pages.preorder-menu', [
             'pickupLocations' => $pickupLocations,
+            'pickupAvailability' => $pickupAvailability,
+            'menuCategories' => collect(),
+            'menuItemsCatalog' => $menuItemsCatalog,
             'pastryItems' => $pastryItems,
+            'preorderSource' => 'cake',
+            'preorderSubmitRoute' => 'preorder.cake.submit',
         ]);
     }
 
@@ -285,7 +322,7 @@ class PreorderController extends Controller
 
         $cakeItemsSummary = $this->buildCakePreOrderSummary($selectedItems, $pastryItems);
 
-        DB::transaction(function () use ($validated, $totalPrice, $cakeItemsSummary): void {
+        $preOrder = DB::transaction(function () use ($validated, $totalPrice, $cakeItemsSummary): PreOrder {
             $phone = trim((string) $validated['phone']);
 
             $customer = Customer::firstOrCreate(
@@ -298,7 +335,7 @@ class PreorderController extends Controller
                 $customer->save();
             }
 
-            PreOrder::create([
+            return PreOrder::create([
                 'source_type' => 'cake',
                 'source_id' => null,
                 'customer_id' => $customer->id,
@@ -314,8 +351,7 @@ class PreorderController extends Controller
         });
 
         return redirect()
-            ->route('preorder.cake')
-            ->with('success', 'Your cake preorder has been placed successfully.');
+            ->route('preorder.menu.confirmation', ['preOrder' => $preOrder]);
     }
 
     private function collectSelectedItems(array $quantities): Collection
