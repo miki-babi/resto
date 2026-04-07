@@ -1,4 +1,9 @@
 <x-layouts.app-main>
+    @php
+        $menuUrl = \App\Filament\Resources\Pages\PageResource::menuUrl();
+        $aboutUrl = \App\Filament\Resources\Pages\PageResource::pageUrl('about');
+    @endphp
+
     {{-- 1. Push SEO tags specifically for Home --}}
     @push('meta')
         <meta name="description"
@@ -59,7 +64,7 @@
                        class="px-10 py-5 bg-white text-black text-sm font-black rounded-2xl shadow-premium hover:shadow-hover hover:-translate-y-1 transition-all">
                         Get Directions
                     </a>
-                    <a href="/menu" 
+                    <a href="{{ $menuUrl }}" 
                        class="px-10 py-5 bg-white/10 backdrop-blur-md text-white text-sm font-black rounded-2xl border border-white/20 hover:bg-white/20 transition-all">
                         View Menu
                     </a>
@@ -76,7 +81,7 @@
                     <p class="text-amber-600 text-[10px] font-black uppercase tracking-widest">Customer Favorites</p>
                     <h2 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tight">Popular Orders</h2>
                 </div>
-                <a href="/menu" class="text-gray-900 font-black text-sm uppercase tracking-widest border-b-2 border-amber-500 pb-1 hover:text-amber-600 transition">
+                <a href="{{ $menuUrl }}" class="text-gray-900 font-black text-sm uppercase tracking-widest border-b-2 border-amber-500 pb-1 hover:text-amber-600 transition">
                     Explroe Full Menu
                 </a>
             </div>
@@ -111,7 +116,7 @@
                     </p>
 
                     <div class="pt-4">
-                        <a href="/about" 
+                        <a href="{{ $aboutUrl }}" 
                            class="inline-flex items-center gap-4 bg-black text-white px-10 py-5 rounded-2xl text-sm font-black shadow-premium hover:shadow-hover hover:-translate-y-1 transition-all">
                             Read Our Full Story
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

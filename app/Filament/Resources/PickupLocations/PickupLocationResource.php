@@ -22,8 +22,7 @@ class PickupLocationResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'pickuplocation';
-                protected static string | UnitEnum | null $navigationGroup = 'Pastry';
-
+    // protected static string | UnitEnum | null $navigationGroup = 'Pastry';
 
     public static function form(Schema $schema): Schema
     {
@@ -39,7 +38,7 @@ class PickupLocationResource extends Resource
     {
         return [
             //
-                RelationManagers\HoursRelationManager::class,
+            RelationManagers\HoursRelationManager::class,
         ];
     }
 

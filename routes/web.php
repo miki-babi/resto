@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Resources\Pages\PageResource;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PreorderController;
 use App\Models\Feedback;
@@ -17,8 +18,8 @@ Route::get('/storage', function () {
     return redirect()->back();
 })->name('storage');
 
-Route::get('/', [LandingController::class, 'home'])->name('home');
-Route::get('/menu', [LandingController::class, 'menu'])->name('menu');
+Route::get(PageResource::homeRoutePath(), [LandingController::class, 'home'])->name(PageResource::homeRouteName());
+Route::get('/menu', [LandingController::class, 'menu'])->name(PageResource::menuRouteName());
 Route::get('/catering', [LandingController::class, 'catering'])->name('catering');
 Route::get('/catering/request', [LandingController::class, 'cateringRequest'])->name('catering.request.page');
 Route::post('/catering/request', [LandingController::class, 'submitCateringRequest'])->name('catering.request');
@@ -106,6 +107,6 @@ Route::post('/feedback/{id}', function (Request $request, $id) {
     }
 })->name('feedback.submit');
 
-Route::get('/{slug}', [LandingController::class, 'page'])
-    ->name('page')
-    ->where('slug', '^[A-Za-z0-9-]+$');
+Route::get(PageResource::pageRoutePath(), [LandingController::class, 'page'])
+    ->name(PageResource::pageRouteName())
+    ->where('slug', PageResource::pageRoutePattern());

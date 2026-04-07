@@ -140,8 +140,6 @@ return [
         ],
         'max_upload_time' => 5, // Max duration (in minutes) before an upload is invalidated...
         'cleanup' => true, // Should cleanup temporary uploads older than 24 hrs...
-        'max_upload_size' => 102400, // 100MB default for all uploads
-
     ],
 
     /*
