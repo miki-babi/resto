@@ -34,7 +34,7 @@ it('asks for phone number on start when telegram user is not linked', function (
     $response = $this->postJson(route('telegram.webhook', ['telegramConfig' => $telegramConfig->id]), [
         'message' => [
             'chat' => ['id' => 9001],
-            'from' => ['id' => 778899, 'username' => 'new_user'],
+            'from' => ['id' => 778899, 'username' => 'new_user', 'first_name' => 'Abel'],
             'text' => '/start',
         ],
     ]);
@@ -88,7 +88,7 @@ it('links telegram user id to an existing customer when provided phone exists', 
     $this->postJson(route('telegram.webhook', ['telegramConfig' => $telegramConfig->id]), [
         'message' => [
             'chat' => ['id' => 9002],
-            'from' => ['id' => 11223344, 'username' => 'existing_user'],
+            'from' => ['id' => 11223344, 'username' => 'existing_user', 'first_name' => 'Mimi'],
             'text' => '/start',
         ],
     ])->assertOk();
@@ -96,7 +96,7 @@ it('links telegram user id to an existing customer when provided phone exists', 
     $this->postJson(route('telegram.webhook', ['telegramConfig' => $telegramConfig->id]), [
         'message' => [
             'chat' => ['id' => 9002],
-            'from' => ['id' => 11223344, 'username' => 'existing_user'],
+            'from' => ['id' => 11223344, 'username' => 'existing_user', 'first_name' => 'Mimi'],
             'text' => '0911111111',
         ],
     ])->assertOk();
@@ -146,7 +146,7 @@ it('creates a customer with phone and telegram user id when phone does not exist
     $this->postJson(route('telegram.webhook', ['telegramConfig' => $telegramConfig->id]), [
         'message' => [
             'chat' => ['id' => 9003],
-            'from' => ['id' => 55667788, 'username' => 'new_phone_user'],
+            'from' => ['id' => 55667788, 'username' => 'new_phone_user', 'first_name' => 'Selam'],
             'text' => '/start',
         ],
     ])->assertOk();
@@ -154,7 +154,7 @@ it('creates a customer with phone and telegram user id when phone does not exist
     $this->postJson(route('telegram.webhook', ['telegramConfig' => $telegramConfig->id]), [
         'message' => [
             'chat' => ['id' => 9003],
-            'from' => ['id' => 55667788, 'username' => 'new_phone_user'],
+            'from' => ['id' => 55667788, 'username' => 'new_phone_user', 'first_name' => 'Selam'],
             'text' => '+251 911 22 33 44',
         ],
     ])->assertOk();
@@ -164,6 +164,7 @@ it('creates a customer with phone and telegram user id when phone does not exist
     $createdCustomer = Customer::query()->first();
 
     expect($createdCustomer)->not()->toBeNull();
+    expect($createdCustomer?->name)->toBe('Selam');
     expect($createdCustomer?->phone)->toBe('+251911223344');
     expect($createdCustomer?->telegram_user_id)->toBe('55667788');
     expect($createdCustomer?->telegram_username)->toBe('new_phone_user');
@@ -173,7 +174,7 @@ it('shows regular start menu for users already linked by telegram id', function 
     $telegramConfig = createTelegramConfig();
 
     $customer = Customer::create([
-        'name' => 'Linked User',
+        'name' => '0922222222',
         'phone' => '0922222222',
         'telegram_user_id' => '99887766',
         'telegram_username' => null,
@@ -202,12 +203,13 @@ it('shows regular start menu for users already linked by telegram id', function 
     $this->postJson(route('telegram.webhook', ['telegramConfig' => $telegramConfig->id]), [
         'message' => [
             'chat' => ['id' => 9004],
-            'from' => ['id' => 99887766, 'username' => 'linked_username'],
+            'from' => ['id' => 99887766, 'username' => 'linked_username', 'first_name' => 'Miki'],
             'text' => '/start',
         ],
     ])->assertOk();
 
     expect(Customer::count())->toBe(1);
+    expect($customer->fresh()->name)->toBe('Miki');
     expect($customer->fresh()->telegram_username)->toBe('linked_username');
 });
 

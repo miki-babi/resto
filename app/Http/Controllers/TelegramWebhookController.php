@@ -34,6 +34,7 @@ class TelegramWebhookController extends Controller
             $messageText = trim((string) data_get($message, 'text', ''));
             $telegramUserId = trim((string) data_get($message, 'from.id', ''));
             $telegramUsername = trim((string) data_get($message, 'from.username', ''));
+            $telegramFirstName = trim((string) data_get($message, 'from.first_name', ''));
 
             $awaitingPhoneKey = $this->awaitingPhoneCacheKey($telegramConfig, $chatId);
             $isAwaitingPhone = Cache::get($awaitingPhoneKey, false) === true;
@@ -41,7 +42,7 @@ class TelegramWebhookController extends Controller
             if ($messageText === '/start') {
                 if ($telegramUserId !== '' && $this->isTelegramUserLinked($telegramUserId)) {
                     Cache::forget($awaitingPhoneKey);
-                    $this->syncTelegramUsername($telegramUserId, $telegramUsername);
+                    $this->syncTelegramProfile($telegramUserId, $telegramUsername, $telegramFirstName);
 
                     $startPayload = $this->telegramBotService->startMessagePayload($chatId, $telegramConfig);
 
@@ -102,6 +103,7 @@ class TelegramWebhookController extends Controller
                     phone: $phone,
                     telegramUserId: $telegramUserId,
                     telegramUsername: $telegramUsername,
+                    telegramFirstName: $telegramFirstName,
                 );
 
                 Cache::forget($awaitingPhoneKey);
@@ -166,17 +168,25 @@ class TelegramWebhookController extends Controller
             ->exists();
     }
 
-    private function syncTelegramUsername(string $telegramUserId, string $telegramUsername): void
+    private function syncTelegramProfile(string $telegramUserId, string $telegramUsername, string $telegramFirstName): void
     {
-        if ($telegramUsername === '') {
+        $customer = Customer::query()
+            ->where('telegram_user_id', $telegramUserId)
+            ->first();
+
+        if (! $customer) {
             return;
         }
 
-        Customer::query()
-            ->where('telegram_user_id', $telegramUserId)
-            ->update([
-                'telegram_username' => $telegramUsername,
-            ]);
+        if ($telegramUsername !== '') {
+            $customer->telegram_username = $telegramUsername;
+        }
+
+        if ($telegramFirstName !== '' && $this->shouldReplaceCustomerName($customer)) {
+            $customer->name = $telegramFirstName;
+        }
+
+        $customer->save();
     }
 
     private function extractPhoneFromMessage(array $message): ?string
@@ -207,19 +217,24 @@ class TelegramWebhookController extends Controller
         return $normalized;
     }
 
-    private function linkCustomerByPhone(string $phone, string $telegramUserId, string $telegramUsername): Customer
-    {
+    private function linkCustomerByPhone(
+        string $phone,
+        string $telegramUserId,
+        string $telegramUsername,
+        string $telegramFirstName
+    ): Customer {
+        $preferredName = $this->resolvePreferredCustomerName($phone, $telegramFirstName);
         $customer = Customer::query()->firstWhere('phone', $phone);
 
         if (! $customer) {
             $customer = new Customer([
-                'name' => $phone,
+                'name' => $preferredName,
                 'phone' => $phone,
             ]);
         }
 
-        if (trim((string) $customer->name) === '') {
-            $customer->name = $phone;
+        if ($this->shouldReplaceCustomerName($customer)) {
+            $customer->name = $preferredName;
         }
 
         if ($telegramUserId !== '') {
@@ -230,5 +245,27 @@ class TelegramWebhookController extends Controller
         $customer->save();
 
         return $customer;
+    }
+
+    private function resolvePreferredCustomerName(string $phone, string $telegramFirstName): string
+    {
+        if ($telegramFirstName !== '') {
+            return $telegramFirstName;
+        }
+
+        return $phone;
+    }
+
+    private function shouldReplaceCustomerName(Customer $customer): bool
+    {
+        $name = trim((string) $customer->name);
+
+        if ($name === '') {
+            return true;
+        }
+
+        $phone = trim((string) $customer->phone);
+
+        return $phone !== '' && $name === $phone;
     }
 }
