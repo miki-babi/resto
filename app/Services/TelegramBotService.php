@@ -45,20 +45,26 @@ class TelegramBotService
 
     /**
      * @return array{
-     *     inline_keyboard: array<int, array<int, array<string, string>>>
+     *     keyboard: array<int, array<int, array<string, mixed>>>,
+     *     resize_keyboard: bool,
+     *     is_persistent: bool,
+     *     one_time_keyboard: bool
      * }
      */
     public function mainReplyKeyboard(?TelegramConfig $telegramConfig = null): array
     {
         return [
-            'inline_keyboard' => [
-                [$this->featureUrlButton(self::FEATURE_ORDER_ONLINE)],
-                [$this->featureUrlButton(self::FEATURE_CAKE_AND_PASTRY_PREORDER)],
-                [$this->featureUrlButton(self::FEATURE_CATERING_REQUEST)],
-                [$this->featureUrlButton(self::FEATURE_MEALBOX_SUBSCRIPTION)],
-                [$this->featureUrlButton(self::FEATURE_FEEDBACK)],
-                [$this->featureUrlButton(self::FEATURE_MENU)],
+            'keyboard' => [
+                [$this->featureMiniAppButton(self::FEATURE_ORDER_ONLINE)],
+                [$this->featureMiniAppButton(self::FEATURE_CAKE_AND_PASTRY_PREORDER)],
+                [$this->featureMiniAppButton(self::FEATURE_CATERING_REQUEST)],
+                [$this->featureMiniAppButton(self::FEATURE_MEALBOX_SUBSCRIPTION)],
+                [$this->featureMiniAppButton(self::FEATURE_FEEDBACK)],
+                [$this->featureMiniAppButton(self::FEATURE_MENU)],
             ],
+            'resize_keyboard' => true,
+            'is_persistent' => true,
+            'one_time_keyboard' => false,
         ];
     }
 
@@ -174,13 +180,18 @@ class TelegramBotService
     }
 
     /**
-     * @return array{text: string, url: string}
+     * @return array{
+     *     text: string,
+     *     web_app: array{url: string}
+     * }
      */
-    private function featureUrlButton(string $feature): array
+    private function featureMiniAppButton(string $feature): array
     {
         return [
             'text' => (string) (self::FEATURE_LABELS[$feature] ?? ''),
-            'url' => $this->featureRouteUrl($feature),
+            'web_app' => [
+                'url' => $this->featureRouteUrl($feature),
+            ],
         ];
     }
 
