@@ -3,9 +3,11 @@
 use App\Filament\Resources\Pages\PageResource;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PreorderController;
+use App\Http\Controllers\TelegramWebhookController;
 use App\Models\Feedback;
 use App\Models\FeedbackLink;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
@@ -31,6 +33,11 @@ Route::get('/preorder-menu/confirmation/{preOrder}', [PreorderController::class,
 
 Route::get('/preorder-cake', [PreorderController::class, 'showCakePage'])->name('preorder.cake');
 Route::post('/preorder-cake', [PreorderController::class, 'submitCake'])->name('preorder.cake.submit');
+
+Route::post('/telegram/webhook/{telegramConfig}', [TelegramWebhookController::class, 'handle'])
+    ->name('telegram.webhook')
+    ->whereNumber('telegramConfig')
+    ->withoutMiddleware([ValidateCsrfToken::class]);
 
 Route::get('/catering2', function () {
     return view('catering');
