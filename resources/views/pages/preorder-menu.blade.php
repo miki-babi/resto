@@ -77,6 +77,7 @@
                 action="{{ route($submitRouteName) }}"
                 data-pickup-availability='@json($pickupAvailability ?? [])'
                 data-menu-items='@json($menuItemsCatalog ?? [])'
+                data-pickup-details-storage-key="resto.preorder.pickup-details"
                 data-old-location="{{ old('pickup_location_id') }}"
                 data-old-date="{{ old('pickup_date') }}"
                 data-old-time="{{ old('pickup_time') }}"

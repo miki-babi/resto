@@ -61,6 +61,19 @@ function normalizeArraySelections(values) {
     return normalized
 }
 
+const defaultPickupDetailsStorageKey = 'resto.preorder.pickup-details'
+
+function normalizePickupDetails(values) {
+    const source = values && typeof values === 'object' ? values : {}
+
+    return {
+        phone: typeof source.phone === 'string' ? source.phone : '',
+        selectedLocation: source.selectedLocation ? String(source.selectedLocation) : '',
+        selectedDate: source.selectedDate ? String(source.selectedDate) : '',
+        selectedTime: source.selectedTime ? String(source.selectedTime) : '',
+    }
+}
+
 window.pickupSelector = function (options) {
     const config = options || {}
     const menuItems = Array.isArray(config.menuItems) ? config.menuItems : []
@@ -112,6 +125,9 @@ window.pickupSelector = function (options) {
         quantities: normalizeQuantities(config.initialQuantities),
         selectedVariants: normalizeScalarSelections(config.initialVariantIds),
         selectedAddons: normalizeArraySelections(config.initialAddonIds),
+        pickupDetailsStorageKey: typeof config.pickupDetailsStorageKey === 'string' && config.pickupDetailsStorageKey
+            ? config.pickupDetailsStorageKey
+            : defaultPickupDetailsStorageKey,
         phone: typeof config.initialPhone === 'string' ? config.initialPhone : '',
         selectedLocation: config.initialLocation ? String(config.initialLocation) : '',
         selectedDate: config.initialDate ? String(config.initialDate) : '',
@@ -126,7 +142,75 @@ window.pickupSelector = function (options) {
             return (title || '').toLowerCase().includes(q) || (description || '').toLowerCase().includes(q)
         },
         init() {
+            this.restorePickupDetails()
             this.onLocationChange()
+            this.registerPickupDetailsWatchers()
+            this.persistPickupDetails()
+        },
+        pickupDetails() {
+            return normalizePickupDetails({
+                phone: this.phone,
+                selectedLocation: this.selectedLocation,
+                selectedDate: this.selectedDate,
+                selectedTime: this.selectedTime,
+            })
+        },
+        restorePickupDetails() {
+            if (!this.pickupDetailsStorageKey) {
+                return
+            }
+
+            let storedPickupDetails = {}
+
+            try {
+                storedPickupDetails = normalizePickupDetails(
+                    parseJson(window.localStorage.getItem(this.pickupDetailsStorageKey), {})
+                )
+            } catch (error) {
+                storedPickupDetails = {}
+            }
+
+            if (!(this.phone || '').trim() && storedPickupDetails.phone) {
+                this.phone = storedPickupDetails.phone
+            }
+
+            if (!this.selectedLocation && storedPickupDetails.selectedLocation) {
+                this.selectedLocation = storedPickupDetails.selectedLocation
+            }
+
+            if (!this.selectedDate && storedPickupDetails.selectedDate) {
+                this.selectedDate = storedPickupDetails.selectedDate
+            }
+
+            if (!this.selectedTime && storedPickupDetails.selectedTime) {
+                this.selectedTime = storedPickupDetails.selectedTime
+            }
+        },
+        persistPickupDetails() {
+            if (!this.pickupDetailsStorageKey) {
+                return
+            }
+
+            const pickupDetails = this.pickupDetails()
+            const hasPickupDetails = Object.values(pickupDetails)
+                .some(value => String(value || '').trim() !== '')
+
+            try {
+                if (!hasPickupDetails) {
+                    window.localStorage.removeItem(this.pickupDetailsStorageKey)
+                    return
+                }
+
+                window.localStorage.setItem(this.pickupDetailsStorageKey, JSON.stringify(pickupDetails))
+            } catch (error) {
+                // Ignore storage write failures and keep the form usable.
+            }
+        },
+        registerPickupDetailsWatchers() {
+            this.$watch('phone', () => this.persistPickupDetails())
+            this.$watch('selectedLocation', () => this.persistPickupDetails())
+            this.$watch('selectedDate', () => this.persistPickupDetails())
+            this.$watch('selectedTime', () => this.persistPickupDetails())
         },
         itemKey(itemId) {
             return String(itemId || '')
@@ -368,6 +452,7 @@ window.pickupSelectorFromEl = function (el) {
         initialDate: el?.dataset?.oldDate || null,
         initialTime: el?.dataset?.oldTime || null,
         initialPhone: el?.dataset?.oldPhone || '',
+        pickupDetailsStorageKey: el?.dataset?.pickupDetailsStorageKey || defaultPickupDetailsStorageKey,
         initialStep: el?.dataset?.initialStep || '1',
     })
 }
