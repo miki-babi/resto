@@ -26,10 +26,16 @@ return new class extends Migration
             $table->dropColumn('delivery_time');
         });
 
-        DB::statement(
-            'ALTER TABLE `meal_box_subscriptions`
-             CHANGE `delivery_time_tmp` `delivery_time` JSON NULL'
-        );
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement(
+                'ALTER TABLE `meal_box_subscriptions`
+                 CHANGE `delivery_time_tmp` `delivery_time` JSON NULL'
+            );
+        } else {
+            Schema::table('meal_box_subscriptions', function (Blueprint $table) {
+                $table->renameColumn('delivery_time_tmp', 'delivery_time');
+            });
+        }
     }
 
     /**
@@ -51,9 +57,15 @@ return new class extends Migration
             $table->dropColumn('delivery_time');
         });
 
-        DB::statement(
-            'ALTER TABLE `meal_box_subscriptions`
-             CHANGE `delivery_time_tmp` `delivery_time` TIME NULL'
-        );
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement(
+                'ALTER TABLE `meal_box_subscriptions`
+                 CHANGE `delivery_time_tmp` `delivery_time` TIME NULL'
+            );
+        } else {
+            Schema::table('meal_box_subscriptions', function (Blueprint $table) {
+                $table->renameColumn('delivery_time_tmp', 'delivery_time');
+            });
+        }
     }
 };

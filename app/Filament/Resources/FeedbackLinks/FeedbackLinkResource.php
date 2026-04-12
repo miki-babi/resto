@@ -19,9 +19,9 @@ class FeedbackLinkResource extends Resource
 {
     protected static ?string $model = FeedbackLink::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Link;
 
-                protected static string | UnitEnum | null $navigationGroup = 'Feedback';
+    protected static string|UnitEnum|null $navigationGroup = 'Feedback';
 
     protected static ?string $recordTitleAttribute = 'feedbacklink';
 

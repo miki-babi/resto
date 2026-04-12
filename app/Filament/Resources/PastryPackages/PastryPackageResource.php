@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PastryPackages;
 use App\Filament\Resources\PastryPackages\Pages\CreatePastryPackage;
 use App\Filament\Resources\PastryPackages\Pages\EditPastryPackage;
 use App\Filament\Resources\PastryPackages\Pages\ListPastryPackages;
+use App\Filament\Resources\PastryPackages\RelationManagers\ItemsRelationManager;
 use App\Filament\Resources\PastryPackages\Schemas\PastryPackageForm;
 use App\Filament\Resources\PastryPackages\Tables\PastryPackagesTable;
 use App\Models\PastryPackage;
@@ -19,8 +20,9 @@ class PastryPackageResource extends Resource
 {
     protected static ?string $model = PastryPackage::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-        protected static string | UnitEnum | null $navigationGroup = 'Pastry';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Pastry';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -38,7 +40,7 @@ class PastryPackageResource extends Resource
     {
         return [
             //
-            \App\Filament\Resources\PastryPackages\RelationManagers\ItemsRelationManager::class,
+            ItemsRelationManager::class,
         ];
     }
 

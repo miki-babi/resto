@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Delivery;
 use App\Models\MenuCategory;
 use App\Models\MenuItem;
 use App\Models\MenuItemAddon;
@@ -11,6 +12,7 @@ use App\Models\PastryItem;
 use App\Models\PickupLocation;
 use App\Models\PickupLocationHour;
 use App\Models\PreOrder;
+use App\Services\OrderService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -151,26 +153,32 @@ class PreorderController extends Controller
             ]);
         }
 
-        $pickupSlot = $this->resolvePickupSlot(
-            (string) $validated['pickup_date'],
-            (string) $validated['pickup_time']
-        );
+        $orderType = $validated['order_type'] ?? 'pickup';
 
-        $this->ensurePickupSlotIsAvailable((int) $validated['pickup_location_id'], $pickupSlot);
+        if ($orderType === 'pickup') {
+            $pickupSlot = $this->resolvePickupSlot(
+                (string) $validated['pickup_date'],
+                (string) $validated['pickup_time']
+            );
+
+            $this->ensurePickupSlotIsAvailable((int) $validated['pickup_location_id'], $pickupSlot);
+        }
 
         $variantIdsByItem = $this->normalizeItemScalarSelections($validated['variant_ids'] ?? []);
         $addonIdsByItem = $this->normalizeItemArraySelections($validated['addon_ids'] ?? []);
 
-        [$orderLines, $totalPrice] = $this->buildMenuOrderLines(
+        $orderService = app(OrderService::class);
+
+        [$orderLines, $totalPrice] = $orderService->buildMenuOrderLines(
             $selectedItems,
             $menuItems,
             $variantIdsByItem,
             $addonIdsByItem
         );
 
-        $menuItemsSummary = $this->buildMenuPreOrderSummary($orderLines);
+        $menuItemsSummary = $orderService->buildMenuPreOrderSummary($orderLines);
 
-        $preOrder = DB::transaction(function () use ($validated, $totalPrice, $menuItemsSummary): PreOrder {
+        $record = DB::transaction(function () use ($validated, $totalPrice, $menuItemsSummary, $orderLines, $orderType) {
             $phone = trim((string) $validated['phone']);
 
             $customer = Customer::firstOrCreate(
@@ -181,6 +189,35 @@ class PreorderController extends Controller
             if (trim((string) $customer->name) === '') {
                 $customer->name = $phone;
                 $customer->save();
+            }
+
+            if ($orderType === 'delivery') {
+                $delivery = Delivery::create([
+                    'customer_id' => $customer->id,
+                    'delivery_phone' => $phone,
+                    'delivery_address' => $validated['delivery_address'],
+                    'delivery_date' => now(), // Same-day express
+                    'total_price' => $totalPrice,
+                    'status' => 'pending',
+                    'payment_status' => 'unpaid',
+                ]);
+
+                foreach ($orderLines as $line) {
+                    $delivery->items()->create([
+                        'menu_item_id' => $line['item_id'],
+                        'menu_item_title' => $line['name'],
+                        'selected_variant_id' => $line['variant_id'],
+                        'selected_variant_name' => $line['variant_name'],
+                        'selected_variant_price' => $line['variant_price'],
+                        'quantity' => $line['quantity'],
+                        'price' => $line['item_price'] ?? 0,
+                        'addons_unit_price' => $line['addons_total_price'] ?? 0,
+                        'selected_addons' => $line['addons'] ?? [],
+                        'line_total_price' => $line['line_total_price'],
+                    ]);
+                }
+
+                return $delivery;
             }
 
             return PreOrder::create([
@@ -198,8 +235,13 @@ class PreorderController extends Controller
             ]);
         });
 
+        if ($record instanceof Delivery) {
+            return redirect()
+                ->route('delivery.confirmation', ['delivery' => $record]);
+        }
+
         return redirect()
-            ->route('preorder.menu.confirmation', ['preOrder' => $preOrder]);
+            ->route('preorder.menu.confirmation', ['preOrder' => $record]);
     }
 
     public function showMenuConfirmation(PreOrder $preOrder)
@@ -214,6 +256,53 @@ class PreorderController extends Controller
         return view('pages.preorder-menu-confirmation', [
             'preOrder' => $preOrder,
         ]);
+    }
+
+    public function showDeliveryConfirmation(Delivery $delivery)
+    {
+        $delivery->loadMissing([
+            'customer:id,name,phone',
+            'items',
+        ]);
+
+        // Map items to a similar structure as PreOrder items_summary for the view
+        $items = $delivery->items->map(function ($item) {
+            return [
+                'name' => $item->menu_item_title.($item->selected_variant_name ? " ({$item->selected_variant_name})" : ''),
+                'quantity' => $item->quantity,
+                'line_total_price' => $item->line_total_price,
+            ];
+        });
+
+        return view('pages.delivery-confirmation', [
+            'delivery' => $delivery,
+            'items' => $items,
+        ]);
+    }
+
+    public function getPastAddresses(Request $request)
+    {
+        $phone = trim((string) $request->query('phone'));
+
+        if ($phone === '') {
+            return response()->json([]);
+        }
+
+        $customer = Customer::where('phone', $phone)->first();
+
+        if (! $customer) {
+            return response()->json([]);
+        }
+
+        $addresses = Delivery::query()
+            ->where('customer_id', $customer->id)
+            ->whereNotNull('delivery_address')
+            ->orderBy('created_at', 'desc')
+            ->distinct()
+            ->pluck('delivery_address')
+            ->take(5);
+
+        return response()->json($addresses);
     }
 
     public function showCakePage()
@@ -277,14 +366,17 @@ class PreorderController extends Controller
     {
         $validated = $request->validate([
             'phone' => ['required', 'string', 'max:20'],
+            'order_type' => ['nullable', 'string', 'in:pickup,delivery'],
+            'delivery_address' => ['required_if:order_type,delivery', 'nullable', 'string', 'max:500'],
             'pickup_location_id' => [
-                'required',
+                'required_if:order_type,pickup',
+                'nullable',
                 Rule::exists('pickup_locations', 'id')->where(
                     fn ($query) => $query->where('is_active', true)
                 ),
             ],
-            'pickup_date' => ['required', 'date', 'after_or_equal:today'],
-            'pickup_time' => ['required', 'date_format:H:i'],
+            'pickup_date' => ['required_if:order_type,pickup', 'nullable', 'date', 'after_or_equal:today'],
+            'pickup_time' => ['required_if:order_type,pickup', 'nullable', 'date_format:H:i'],
             'quantities' => ['required', 'array'],
             'quantities.*' => ['nullable', 'integer', 'min:0', 'max:100'],
         ]);
@@ -311,16 +403,56 @@ class PreorderController extends Controller
             ]);
         }
 
-        $pickupSlot = $this->resolvePickupSlot(
-            (string) $validated['pickup_date'],
-            (string) $validated['pickup_time']
-        );
+        $orderType = $validated['order_type'] ?? 'pickup';
 
-        $this->ensurePickupSlotIsAvailable((int) $validated['pickup_location_id'], $pickupSlot);
+        if ($orderType === 'pickup') {
+            $pickupSlot = $this->resolvePickupSlot(
+                (string) $validated['pickup_date'],
+                (string) $validated['pickup_time']
+            );
+
+            $this->ensurePickupSlotIsAvailable((int) $validated['pickup_location_id'], $pickupSlot);
+        }
 
         $totalPrice = $this->calculateTotalPrice($selectedItems, $pastryItems);
 
         $cakeItemsSummary = $this->buildCakePreOrderSummary($selectedItems, $pastryItems);
+
+        $orderType = $validated['order_type'] ?? 'pickup';
+
+        if ($orderType === 'delivery') {
+            $delivery = DB::transaction(function () use ($validated, $totalPrice, $cakeItemsSummary): Delivery {
+                $phone = trim((string) $validated['phone']);
+                $customer = Customer::firstOrCreate(['phone' => $phone], ['name' => $phone]);
+
+                $delivery = Delivery::create([
+                    'customer_id' => $customer->id,
+                    'delivery_phone' => $phone,
+                    'delivery_address' => $validated['delivery_address'],
+                    'delivery_date' => Carbon::today(),
+                    'total_price' => $totalPrice,
+                    'status' => 'pending',
+                    'payment_status' => 'pending',
+                ]);
+
+                foreach ($cakeItemsSummary as $itemSummary) {
+                    $itemData = [
+                        'menu_item_id' => $itemSummary['item_id'],
+                        'title' => $itemSummary['name'],
+                        'quantity' => $itemSummary['quantity'],
+                        'unit_price' => (float) ($itemSummary['line_total_price'] / $itemSummary['quantity']),
+                        'variant_title' => $itemSummary['variant'] ?? null,
+                        'variant_price' => 0,
+                    ];
+
+                    $delivery->items()->create($itemData);
+                }
+
+                return $delivery;
+            });
+
+            return redirect()->route('delivery.confirmation', ['delivery' => $delivery]);
+        }
 
         $preOrder = DB::transaction(function () use ($validated, $totalPrice, $cakeItemsSummary): PreOrder {
             $phone = trim((string) $validated['phone']);
@@ -410,104 +542,6 @@ class PreorderController extends Controller
         }
 
         return $normalized;
-    }
-
-    private function buildMenuOrderLines(
-        Collection $selectedItems,
-        Collection $menuItemsById,
-        array $variantIdsByItem,
-        array $addonIdsByItem
-    ): array {
-        $orderLines = [];
-        $totalCents = 0;
-
-        foreach ($selectedItems as $selectedItem) {
-            $itemId = $selectedItem['id'];
-            $quantity = $selectedItem['quantity'];
-            $menuItem = $menuItemsById->get($itemId);
-
-            $selectedVariantId = (int) ($variantIdsByItem[$itemId] ?? 0);
-            $selectedVariant = null;
-
-            if ($selectedVariantId > 0) {
-                $selectedVariant = $menuItem->variants->firstWhere('id', $selectedVariantId);
-
-                if (! $selectedVariant instanceof MenuItemVariant) {
-                    throw ValidationException::withMessages([
-                        "variant_ids.$itemId" => "Selected variant is invalid for {$menuItem->title}.",
-                    ]);
-                }
-            }
-
-            $requestedAddonIds = $addonIdsByItem[$itemId] ?? [];
-            $selectedAddons = $menuItem->addons->whereIn('id', $requestedAddonIds)->values();
-
-            if ($selectedAddons->count() !== count($requestedAddonIds)) {
-                throw ValidationException::withMessages([
-                    "addon_ids.$itemId" => "One or more addons are invalid for {$menuItem->title}.",
-                ]);
-            }
-
-            if ($selectedAddons->contains(fn ($addon): bool => ! $addon instanceof MenuItemAddon)) {
-                throw ValidationException::withMessages([
-                    "addon_ids.$itemId" => "One or more addons are invalid for {$menuItem->title}.",
-                ]);
-            }
-
-            $unitBaseCents = (int) round(((float) ($selectedVariant?->price ?? $menuItem->price)) * 100);
-            $addonsUnitCents = (int) round(
-                $selectedAddons->sum(fn (MenuItemAddon $addon): float => (float) $addon->price) * 100
-            );
-            $lineTotalCents = ($unitBaseCents + $addonsUnitCents) * $quantity;
-
-            $totalCents += $lineTotalCents;
-
-            $orderLines[] = [
-                'menu_item_id' => $menuItem->id,
-                'menu_item_title' => $menuItem->title,
-                'menu_item_image' => $menuItem->getFirstMediaUrl('menu_images'),
-                'selected_variant_id' => $selectedVariant?->id,
-                'selected_variant_name' => $selectedVariant?->name,
-                'selected_variant_price' => $selectedVariant ? (float) $selectedVariant->price : null,
-                'quantity' => $quantity,
-                'price' => $unitBaseCents / 100,
-                'addons_unit_price' => $addonsUnitCents / 100,
-                'selected_addons' => $selectedAddons
-                    ->map(fn (MenuItemAddon $addon): array => [
-                        'id' => $addon->id,
-                        'name' => $addon->name,
-                        'price' => (float) $addon->price,
-                    ])
-                    ->values()
-                    ->all(),
-                'line_total_price' => $lineTotalCents / 100,
-            ];
-        }
-
-        return [$orderLines, $totalCents / 100];
-    }
-
-    private function buildMenuPreOrderSummary(array $orderLines): array
-    {
-        return collect($orderLines)
-            ->map(function (array $line): array {
-                return [
-                    'item_id' => (int) ($line['menu_item_id'] ?? 0),
-                    'item_type' => 'menu',
-                    'name' => (string) ($line['menu_item_title'] ?? 'Menu Item'),
-                    'quantity' => (int) ($line['quantity'] ?? 0),
-                    'image_url' => (string) ($line['menu_item_image'] ?? ''),
-                    'variant' => $line['selected_variant_name'] ?? null,
-                    'addons' => collect($line['selected_addons'] ?? [])
-                        ->pluck('name')
-                        ->filter()
-                        ->values()
-                        ->all(),
-                    'line_total_price' => (float) ($line['line_total_price'] ?? 0),
-                ];
-            })
-            ->values()
-            ->all();
     }
 
     private function buildCakePreOrderSummary(Collection $selectedItems, Collection $pastryItems): array

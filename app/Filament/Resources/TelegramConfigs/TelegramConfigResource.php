@@ -18,7 +18,7 @@ class TelegramConfigResource extends Resource
 {
     protected static ?string $model = TelegramConfig::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog;
 
     protected static ?string $recordTitleAttribute = 'telegram config';
 

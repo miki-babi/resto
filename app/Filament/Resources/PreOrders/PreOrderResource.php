@@ -22,9 +22,9 @@ class PreOrderResource extends Resource
 {
     protected static ?string $model = PreOrder::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Orders';
+    // protected static string|UnitEnum|null $navigationGroup = 'Orders';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ShoppingCart;
 
     protected static ?string $recordTitleAttribute = 'order_number';
 

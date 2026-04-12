@@ -43,4 +43,9 @@ class Customer extends Model
     {
         return $this->hasMany(LoyalityRedemption::class);
     }
+
+    public function deliveries()
+    {
+        return $this->hasMany(Delivery::class);
+    }
 }

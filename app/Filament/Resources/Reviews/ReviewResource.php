@@ -19,10 +19,11 @@ class ReviewResource extends Resource
 {
     protected static ?string $model = Review::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Star;
 
     protected static ?string $recordTitleAttribute = 'review';
-                protected static string | UnitEnum | null $navigationGroup = 'WebFront';
+
+    protected static string|UnitEnum|null $navigationGroup = 'WebFront';
 
     public static function form(Schema $schema): Schema
     {

@@ -1,6 +1,11 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\Filament\OwnerPanelProvider;
+use App\Providers\TelescopeServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\Filament\OwnerPanelProvider::class,
+    AppServiceProvider::class,
+    OwnerPanelProvider::class,
+    TelescopeServiceProvider::class,
 ];

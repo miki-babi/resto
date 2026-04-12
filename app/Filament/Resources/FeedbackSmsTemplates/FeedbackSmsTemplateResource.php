@@ -19,8 +19,9 @@ class FeedbackSmsTemplateResource extends Resource
 {
     protected static ?string $model = FeedbackSmsTemplate::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-            protected static string | UnitEnum | null $navigationGroup = 'Feedback';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ChatBubbleLeftRight;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Feedback';
 
     protected static ?string $recordTitleAttribute = 'feedbacksmstemplate';
 

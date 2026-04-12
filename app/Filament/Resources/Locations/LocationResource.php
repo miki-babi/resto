@@ -19,8 +19,9 @@ class LocationResource extends Resource
 {
     protected static ?string $model = Location::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-                protected static string | UnitEnum | null $navigationGroup = 'WebFront';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
+
+    protected static string|UnitEnum|null $navigationGroup = 'WebFront';
 
     protected static ?string $recordTitleAttribute = 'location';
 

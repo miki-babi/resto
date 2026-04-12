@@ -19,12 +19,11 @@ class GalleryResource extends Resource
 {
     protected static ?string $model = Gallery::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Camera;
 
     protected static ?string $recordTitleAttribute = 'gallery';
 
-                protected static string | UnitEnum | null $navigationGroup = 'WebFront';
-
+    protected static string|UnitEnum|null $navigationGroup = 'WebFront';
 
     public static function form(Schema $schema): Schema
     {

@@ -19,9 +19,9 @@ class MealBoxResource extends Resource
 {
     protected static ?string $model = MealBox::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ArchiveBox;
 
-                protected static string | UnitEnum | null $navigationGroup = 'MealBox';
+    protected static string|UnitEnum|null $navigationGroup = 'MealBox';
 
     protected static ?string $recordTitleAttribute = 'mealbox';
 

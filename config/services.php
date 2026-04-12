@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'sms_ethiopia' => [
+        'enabled' => env('SMS_ETHIOPIA_ENABLED', false),
+        'base_url' => env('SMS_ETHIOPIA_BASE_URL', 'https://smsethiopia.et/api'),
+        'key' => env('SMS_ETHIOPIA_API_KEY'),
+    ],
+
 ];

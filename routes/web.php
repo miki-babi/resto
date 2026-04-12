@@ -1,11 +1,13 @@
 <?php
 
 use App\Filament\Resources\Pages\PageResource;
+use App\Http\Controllers\DeliveryMenuController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PreorderController;
 use App\Http\Controllers\TelegramWebhookController;
 use App\Models\Feedback;
 use App\Models\FeedbackLink;
+use App\Services\SmsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\Request;
@@ -42,6 +44,15 @@ Route::get('/preorder-menu', [PreorderController::class, 'showMenuPage'])->name(
 Route::post('/preorder-menu', [PreorderController::class, 'submitMenu'])->name('preorder.menu.submit');
 Route::get('/preorder-menu/confirmation/{preOrder}', [PreorderController::class, 'showMenuConfirmation'])
     ->name('preorder.menu.confirmation');
+Route::get('/delivery-confirmation/{delivery}', [PreorderController::class, 'showDeliveryConfirmation'])
+    ->name('delivery.confirmation');
+
+// Dedicated Delivery Menu
+Route::get('/delivery', [DeliveryMenuController::class, 'index'])->name('delivery.menu');
+Route::post('/delivery/submit', [DeliveryMenuController::class, 'submit'])->name('delivery.submit');
+
+Route::get('/past-addresses', [PreorderController::class, 'getPastAddresses'])
+    ->name('past-addresses');
 
 Route::get('/preorder-cake', [PreorderController::class, 'showCakePage'])->name('preorder.cake');
 Route::post('/preorder-cake', [PreorderController::class, 'submitCake'])->name('preorder.cake.submit');
@@ -129,3 +140,4 @@ Route::post('/feedback/{id}', function (Request $request, $id) {
 Route::get(PageResource::pageRoutePath(), [LandingController::class, 'page'])
     ->name(PageResource::pageRouteName())
     ->where('slug', PageResource::pageRoutePattern());
+

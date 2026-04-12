@@ -68,6 +68,8 @@ function normalizePickupDetails(values) {
 
     return {
         phone: typeof source.phone === 'string' ? source.phone : '',
+        orderType: source.orderType === 'delivery' ? 'delivery' : 'pickup',
+        address: typeof source.address === 'string' ? source.address : '',
         selectedLocation: source.selectedLocation ? String(source.selectedLocation) : '',
         selectedDate: source.selectedDate ? String(source.selectedDate) : '',
         selectedTime: source.selectedTime ? String(source.selectedTime) : '',
@@ -129,6 +131,10 @@ window.pickupSelector = function (options) {
             ? config.pickupDetailsStorageKey
             : defaultPickupDetailsStorageKey,
         phone: typeof config.initialPhone === 'string' ? config.initialPhone : '',
+        orderType: config.initialOrderType === 'delivery' ? 'delivery' : 'pickup',
+        forceOrderType: config.forceOrderType || null,
+        address: '',
+        pastAddresses: [],
         selectedLocation: config.initialLocation ? String(config.initialLocation) : '',
         selectedDate: config.initialDate ? String(config.initialDate) : '',
         selectedTime: config.initialTime ? String(config.initialTime) : '',
@@ -143,13 +149,22 @@ window.pickupSelector = function (options) {
         },
         init() {
             this.restorePickupDetails()
+            if (this.forceOrderType) {
+                this.orderType = this.forceOrderType
+            }
             this.onLocationChange()
             this.registerPickupDetailsWatchers()
             this.persistPickupDetails()
+            
+            if (this.phone) {
+                this.fetchPastAddresses()
+            }
         },
         pickupDetails() {
             return normalizePickupDetails({
                 phone: this.phone,
+                orderType: this.orderType,
+                address: this.address,
                 selectedLocation: this.selectedLocation,
                 selectedDate: this.selectedDate,
                 selectedTime: this.selectedTime,
@@ -185,6 +200,14 @@ window.pickupSelector = function (options) {
             if (!this.selectedTime && storedPickupDetails.selectedTime) {
                 this.selectedTime = storedPickupDetails.selectedTime
             }
+
+            if (storedPickupDetails.orderType) {
+                this.orderType = storedPickupDetails.orderType
+            }
+
+            if (!this.address && storedPickupDetails.address) {
+                this.address = storedPickupDetails.address
+            }
         },
         persistPickupDetails() {
             if (!this.pickupDetailsStorageKey) {
@@ -207,10 +230,31 @@ window.pickupSelector = function (options) {
             }
         },
         registerPickupDetailsWatchers() {
-            this.$watch('phone', () => this.persistPickupDetails())
+            this.$watch('phone', () => {
+                this.persistPickupDetails()
+                this.fetchPastAddresses()
+            })
+            this.$watch('orderType', () => this.persistPickupDetails())
+            this.$watch('address', () => this.persistPickupDetails())
             this.$watch('selectedLocation', () => this.persistPickupDetails())
             this.$watch('selectedDate', () => this.persistPickupDetails())
             this.$watch('selectedTime', () => this.persistPickupDetails())
+        },
+        async fetchPastAddresses() {
+            const phone = (this.phone || '').trim()
+            if (phone.length < 5) {
+                this.pastAddresses = []
+                return
+            }
+
+            try {
+                const response = await fetch(`/past-addresses?phone=${encodeURIComponent(phone)}`)
+                if (response.ok) {
+                    this.pastAddresses = await response.json()
+                }
+            } catch (e) {
+                console.error('Failed to fetch past addresses', e)
+            }
         },
         itemKey(itemId) {
             return String(itemId || '')
@@ -335,7 +379,13 @@ window.pickupSelector = function (options) {
             this.detailsError = ''
         },
         detailsComplete() {
-            return Boolean((this.phone || '').trim())
+            const hasPhone = Boolean((this.phone || '').trim())
+            
+            if (this.orderType === 'delivery') {
+                return hasPhone && Boolean((this.address || '').trim())
+            }
+
+            return hasPhone
                 && Boolean(this.selectedLocation)
                 && Boolean(this.selectedDate)
                 && Boolean(this.selectedTime)
@@ -358,7 +408,9 @@ window.pickupSelector = function (options) {
             }
 
             if (!this.detailsComplete()) {
-                this.detailsError = 'Please fill your phone, pickup location, date, and time.'
+                this.detailsError = this.orderType === 'delivery'
+                    ? 'Please provide your phone and delivery address.'
+                    : 'Please fill your phone, pickup location, date, and time.'
                 this.step = 2
                 this.mobileCartOpen = true
                 return
@@ -454,6 +506,8 @@ window.pickupSelectorFromEl = function (el) {
         initialPhone: el?.dataset?.oldPhone || '',
         pickupDetailsStorageKey: el?.dataset?.pickupDetailsStorageKey || defaultPickupDetailsStorageKey,
         initialStep: el?.dataset?.initialStep || '1',
+        initialOrderType: el?.dataset?.initialOrderType || null,
+        forceOrderType: el?.dataset?.forceOrderType || null,
     })
 }
 

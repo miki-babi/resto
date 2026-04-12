@@ -43,4 +43,12 @@ class MenuItem extends Model implements HasMedia
         $this->addMediaCollection('menu_images')
             ->useDisk('public');
     }
+
+    public function scopeAvailableForPreorder($query)
+    {
+        return $query->where('is_available', true)
+            ->where('preorder_available', true)
+            ->orderBy('sort_order')
+            ->orderBy('title');
+    }
 }

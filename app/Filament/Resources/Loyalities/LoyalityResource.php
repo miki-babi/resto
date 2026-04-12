@@ -19,7 +19,7 @@ class LoyalityResource extends Resource
 {
     protected static ?string $model = Loyality::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Gift;
 
     protected static string|UnitEnum|null $navigationGroup = 'Promotions';
 

@@ -192,13 +192,13 @@
                                     </div>
                                 </div>
 
-                                <div class="inline-flex rounded-xl bg-gray-100 p-1">
-                                    <button type="button" class="rounded-lg bg-white px-4 py-1.5 text-xs font-bold text-gray-900 shadow-sm transition-all">
+                                <div class="inline-flex rounded-xl bg-gray-100 p-1 w-42">
+                                    <a  href="{{ route('preorder.menu') }}" class="rounded-lg bg-white px-4 py-1.5 text-xs font-bold text-gray-900 shadow-sm transition-all">
                                         Pickup
-                                    </button>
-                                    <button type="button" disabled class="rounded-lg px-4 py-1.5 text-xs font-bold text-gray-400 cursor-not-allowed">
+                                    </a>
+                                    <a href="{{ route('delivery.menu') }}" class="rounded-lg px-4 py-1.5 text-xs font-bold text-gray-400 ">
                                         Delivery
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
 
@@ -314,8 +314,8 @@
                         {{-- Step 2: Pickup Details --}}
                         <div x-show="step === 2" x-cloak class="pb-20">
                             <div class="mb-8">
-                                <h2 class="text-3xl font-black text-gray-900 tracking-tight">Pickup Details</h2>
-                                <p class="mt-2 text-gray-500 font-medium">When and where would you like to collect your order?</p>
+                                <h2 class="text-3xl font-black text-gray-900 tracking-tight" x-text="orderType === 'delivery' ? 'Delivery Details' : 'Pickup Details'"></h2>
+                                <p class="mt-2 text-gray-500 font-medium" x-text="orderType === 'delivery' ? 'Where should we bring your meal?' : 'When and where would you like to collect your order?'"></p>
                             </div>
 
                             <div class="space-y-8 p-10 rounded-[32px] bg-white border border-gray-100 shadow-premium">
@@ -325,57 +325,79 @@
                                            class="w-full rounded-2xl border-gray-100 bg-gray-50 py-5 px-6 text-lg focus:ring-2 focus:ring-black focus:border-black font-bold transition-all placeholder:text-gray-300">
                                     <p x-show="!phone" class="mt-3 text-xs font-bold text-amber-600 flex items-center gap-1.5">
                                         <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                                        Required for order updates & pickup notification
+                                        Required for order updates & notification
                                     </p>
                                 </div>
 
                                 <div class="h-px bg-gray-50"></div>
 
-                                <div>
-                                    <label class="text-xs font-black uppercase tracking-widest text-gray-900 mb-4 block">Pickup Location</label>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        @foreach ($pickupLocations as $location)
-                                            <label class="relative flex flex-col p-5 rounded-2xl border-2 transition-all cursor-pointer group"
-                                                   :class="selectedLocation == '{{ $location->id }}' ? 'border-black bg-black/5 shadow-premium' : 'border-gray-50 hover:border-gray-200'">
-                                                <input type="radio" value="{{ $location->id }}" x-model="selectedLocation" @change="onLocationChange()" class="sr-only">
-                                                <span class="text-sm font-bold text-gray-900">{{ $location->name }}</span>
-                                                <span class="mt-1 text-xs font-medium text-gray-500 line-clamp-1 group-hover:text-gray-700 transition-colors">Available for pickup today</span>
-                                                <div class="absolute top-4 right-4" x-show="selectedLocation == '{{ $location->id }}'">
-                                                    <div class="h-2 w-2 rounded-full bg-black"></div>
-                                                </div>
-                                            </label>
-                                        @endforeach
-                                    </div>
+                                <div x-show="orderType === 'delivery'">
+                                    <label class="text-xs font-black uppercase tracking-widest text-gray-900 mb-4 block">Delivery Address</label>
+                                    
+                                    <template x-if="pastAddresses.length > 0">
+                                        <div class="mb-4 flex flex-wrap gap-2">
+                                            <template x-for="pastAddress in pastAddresses" :key="pastAddress">
+                                                <button type="button" 
+                                                        @click="address = pastAddress"
+                                                        class="px-3 py-1.5 rounded-xl border border-gray-100 bg-white text-xs font-bold text-gray-600 hover:border-black hover:text-black transition-all"
+                                                        x-text="pastAddress">
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </template>
+
+                                    <textarea x-model="address" placeholder="Enter your full delivery address..." rows="3"
+                                              class="w-full rounded-2xl border-gray-100 bg-gray-50 py-5 px-6 text-lg focus:ring-2 focus:ring-black focus:border-black font-bold transition-all placeholder:text-gray-300"></textarea>
+                                    <p class="mt-3 text-xs font-bold text-gray-400">Same-day express delivery is prepared immediately.</p>
                                 </div>
 
-                                <div class="h-px bg-gray-50"></div>
-
-                                <div class="grid grid-cols-2 gap-8">
+                                <div x-show="orderType === 'pickup'" class="space-y-8">
                                     <div>
-                                        <label class="text-xs font-black uppercase tracking-widest text-gray-900 mb-4 block">Pickup Date</label>
-                                        <div class="relative">
-                                            <select x-model="selectedDate" @change="onDateChange()" 
-                                                    class="w-full appearance-none rounded-2xl border-gray-100 bg-gray-50 py-5 px-6 text-sm focus:ring-2 focus:ring-black focus:border-black font-bold transition-all">
-                                                <template x-for="option in dateOptions()" :key="option.value">
-                                                    <option :value="option.value" x-text="option.label"></option>
-                                                </template>
-                                            </select>
-                                            <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>
-                                            </div>
+                                        <label class="text-xs font-black uppercase tracking-widest text-gray-900 mb-4 block">Pickup Location</label>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            @foreach ($pickupLocations as $location)
+                                                <label class="relative flex flex-col p-5 rounded-2xl border-2 transition-all cursor-pointer group"
+                                                       :class="selectedLocation == '{{ $location->id }}' ? 'border-black bg-black/5 shadow-premium' : 'border-gray-50 hover:border-gray-200'">
+                                                    <input type="radio" value="{{ $location->id }}" x-model="selectedLocation" @change="onLocationChange()" class="sr-only">
+                                                    <span class="text-sm font-bold text-gray-900">{{ $location->name }}</span>
+                                                    <span class="mt-1 text-xs font-medium text-gray-500 line-clamp-1 group-hover:text-gray-700 transition-colors">Available for pickup today</span>
+                                                    <div class="absolute top-4 right-4" x-show="selectedLocation == '{{ $location->id }}'">
+                                                        <div class="h-2 w-2 rounded-full bg-black"></div>
+                                                    </div>
+                                                </label>
+                                            @endforeach
                                         </div>
                                     </div>
-                                    <div>
-                                        <label class="text-xs font-black uppercase tracking-widest text-gray-900 mb-4 block">Pickup Time</label>
-                                        <div class="relative">
-                                            <select x-model="selectedTime" 
-                                                    class="w-full appearance-none rounded-2xl border-gray-100 bg-gray-50 py-5 px-6 text-sm focus:ring-2 focus:ring-black focus:border-black font-bold transition-all">
-                                                <template x-for="option in timeOptions()" :key="option.value">
-                                                    <option :value="option.value" x-text="option.label"></option>
-                                                </template>
-                                            </select>
-                                            <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>
+
+                                    <div class="h-px bg-gray-50"></div>
+
+                                    <div class="grid grid-cols-2 gap-8">
+                                        <div>
+                                            <label class="text-xs font-black uppercase tracking-widest text-gray-900 mb-4 block">Pickup Date</label>
+                                            <div class="relative">
+                                                <select x-model="selectedDate" @change="onDateChange()" 
+                                                        class="w-full appearance-none rounded-2xl border-gray-100 bg-gray-50 py-5 px-6 text-sm focus:ring-2 focus:ring-black focus:border-black font-bold transition-all">
+                                                    <template x-for="option in dateOptions()" :key="option.value">
+                                                        <option :value="option.value" x-text="option.label"></option>
+                                                    </template>
+                                                </select>
+                                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-black uppercase tracking-widest text-gray-900 mb-4 block">Pickup Time</label>
+                                            <div class="relative">
+                                                <select x-model="selectedTime" 
+                                                        class="w-full appearance-none rounded-2xl border-gray-100 bg-gray-50 py-5 px-6 text-sm focus:ring-2 focus:ring-black focus:border-black font-bold transition-all">
+                                                    <template x-for="option in timeOptions()" :key="option.value">
+                                                        <option :value="option.value" x-text="option.label"></option>
+                                                    </template>
+                                                </select>
+                                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

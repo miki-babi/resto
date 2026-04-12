@@ -19,8 +19,9 @@ class PastryItemResource extends Resource
 {
     protected static ?string $model = PastryItem::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-        protected static string | UnitEnum | null $navigationGroup = 'Pastry';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Cake;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Pastry';
 
     protected static ?string $recordTitleAttribute = 'name';
 

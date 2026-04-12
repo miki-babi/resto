@@ -12,7 +12,7 @@ class MenuCategory extends Model
         'slug',
         'description',
         'is_active',
-        'sort_order'
+        'sort_order',
     ];
 
     public function items()
@@ -23,5 +23,12 @@ class MenuCategory extends Model
     public function pages()
     {
         return $this->hasMany(Page::class);
+    }
+
+    public function scopeActiveForDelivery($query)
+    {
+        return $query->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name');
     }
 }

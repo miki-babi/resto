@@ -31,7 +31,8 @@ class PreOrdersTable
                         'menu' => 'Menu',
                         'cake' => 'Cake',
                         default => 'Unknown',
-                    }),
+                    })->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('customer.name')
                     ->label('Customer')
                     ->searchable(),
@@ -135,57 +136,57 @@ class PreOrdersTable
             ])
             ->recordActions([
                 EditAction::make(),
-                Action::make('redeem_reward')
-                    ->label('Redeem Reward')
-                    ->icon('heroicon-m-gift')
-                    ->color('success')
-                    ->visible(fn (PreOrder $record): bool => (int) ($record->customer_id ?? 0) > 0)
-                    ->schema([
-                        Select::make('loyality_id')
-                            ->label('Reward')
-                            ->options(function (): array {
-                                return Loyality::query()
-                                    ->where('is_active', true)
-                                    ->orderBy('sort_order')
-                                    ->orderBy('name')
-                                    ->get()
-                                    ->mapWithKeys(fn (Loyality $loyality): array => [
-                                        $loyality->id => "{$loyality->name} ({$loyality->points_required} pts)",
-                                    ])
-                                    ->all();
-                            })
-                            ->required()
-                            ->searchable()
-                            ->preload(),
-                        Textarea::make('notes')
-                            ->rows(3)
-                            ->default(null),
-                    ])
-                    ->action(function (PreOrder $record, array $data, LoyaltyService $loyaltyService): void {
-                        $customer = $record->customer;
+                // Action::make('redeem_reward')
+                //     ->label('Redeem Reward')
+                //     ->icon('heroicon-m-gift')
+                //     ->color('success')
+                //     ->visible(fn (PreOrder $record): bool => (int) ($record->customer_id ?? 0) > 0)
+                //     ->schema([
+                //         Select::make('loyality_id')
+                //             ->label('Reward')
+                //             ->options(function (): array {
+                //                 return Loyality::query()
+                //                     ->where('is_active', true)
+                //                     ->orderBy('sort_order')
+                //                     ->orderBy('name')
+                //                     ->get()
+                //                     ->mapWithKeys(fn (Loyality $loyality): array => [
+                //                         $loyality->id => "{$loyality->name} ({$loyality->points_required} pts)",
+                //                     ])
+                //                     ->all();
+                //             })
+                //             ->required()
+                //             ->searchable()
+                //             ->preload(),
+                //         Textarea::make('notes')
+                //             ->rows(3)
+                //             ->default(null),
+                //     ])
+                //     ->action(function (PreOrder $record, array $data, LoyaltyService $loyaltyService): void {
+                //         $customer = $record->customer;
 
-                        if (! $customer) {
-                            throw ValidationException::withMessages([
-                                'loyality_id' => 'This preorder has no customer.',
-                            ]);
-                        }
+                //         if (! $customer) {
+                //             throw ValidationException::withMessages([
+                //                 'loyality_id' => 'This preorder has no customer.',
+                //             ]);
+                //         }
 
-                        $loyality = Loyality::query()->find((int) ($data['loyality_id'] ?? 0));
+                //         $loyality = Loyality::query()->find((int) ($data['loyality_id'] ?? 0));
 
-                        if (! $loyality) {
-                            throw ValidationException::withMessages([
-                                'loyality_id' => 'Selected reward could not be found.',
-                            ]);
-                        }
+                //         if (! $loyality) {
+                //             throw ValidationException::withMessages([
+                //                 'loyality_id' => 'Selected reward could not be found.',
+                //             ]);
+                //         }
 
-                        $loyaltyService->redeemReward(
-                            customer: $customer,
-                            loyality: $loyality,
-                            preOrder: $record,
-                            notes: $data['notes'] ?? null,
-                        );
-                    })
-                    ->successNotificationTitle('Reward redeemed successfully.'),
+                //         $loyaltyService->redeemReward(
+                //             customer: $customer,
+                //             loyality: $loyality,
+                //             preOrder: $record,
+                //             notes: $data['notes'] ?? null,
+                //         );
+                //     })
+                //     ->successNotificationTitle('Reward redeemed successfully.'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

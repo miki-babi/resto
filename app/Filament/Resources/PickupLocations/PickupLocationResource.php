@@ -19,7 +19,7 @@ class PickupLocationResource extends Resource
 {
     protected static ?string $model = PickupLocation::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::MapPin;
 
     protected static ?string $recordTitleAttribute = 'pickuplocation';
     // protected static string | UnitEnum | null $navigationGroup = 'Pastry';
