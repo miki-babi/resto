@@ -42,30 +42,42 @@
 <div
     x-data
     @click="$dispatch('open-menu-modal', {{ json_encode(['title' => $title, 'price' => $price, 'description' => $description, 'images' => $resolvedImages, 'variants' => $variants, 'addons' => $addons]) }})"
-    class="group cursor-pointer"
+    class="group cursor-pointer flex items-center justify-between gap-6 py-6 border-b border-gray-100/60 first:pt-0 last:border-0"
 >
-    {{-- Image Container --}}
-    <div class="relative aspect-square overflow-hidden rounded-[32px] bg-gray-50 border border-gray-100 shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:-translate-y-1">
+    {{-- Content (Left) --}}
+    <div class="flex-1 min-w-0 pr-4">
+        <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-amber-700 transition-colors">
+            {{ $title }}
+        </h3>
+        
+        @if($cardExcerpt)
+            <p class="text-sm text-gray-400 font-medium line-clamp-2 mt-1 leading-snug">
+                {{ $cardExcerpt }}
+            </p>
+        @endif
+
+        <p class="text-base font-bold text-gray-900 mt-3">
+            {{ str_contains($price, 'ETB') ? $price : "ETB $price" }}
+        </p>
+    </div>
+
+    {{-- Image Container (Right) --}}
+    <div class="relative w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 overflow-hidden rounded-2xl bg-gray-50 border border-gray-100">
         <img 
             src="{{ $thumbnail }}" 
             alt="{{ $alt }}" 
-            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
             loading="lazy" 
         />
         
-        {{-- Floating Details Indicator --}}
-        <div class="absolute bottom-3 right-3 h-10 w-10 flex items-center justify-center rounded-2xl bg-white/90 backdrop-blur shadow-lg text-gray-900 opacity-0 transform translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+        {{-- Floating (+) Button --}}
+        <div class="absolute bottom-2 right-2 h-8 w-8 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-900 transition-transform group-active:scale-90">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
             </svg>
         </div>
     </div>
-
-    {{-- Content --}}
-    <div class="mt-4 px-2 space-y-1">
-        <div class="flex justify-between items-start gap-4">
-            <h3 class="text-[13px] font-black text-gray-900 leading-tight tracking-tight uppercase group-hover:text-amber-600 transition-colors duration-300">{{ $title }}</h3>
-        </div>
-        <p class="text-[11px] font-bold text-gray-400 font-mono">{{ $price }}</p>
-    </div>
 </div>
+
+
+

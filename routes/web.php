@@ -140,4 +140,3 @@ Route::post('/feedback/{id}', function (Request $request, $id) {
 Route::get(PageResource::pageRoutePath(), [LandingController::class, 'page'])
     ->name(PageResource::pageRouteName())
     ->where('slug', PageResource::pageRoutePattern());
-

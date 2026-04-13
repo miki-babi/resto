@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SmsPromos;
 use App\Filament\Resources\SmsPromos\Pages\CreateSmsPromo;
 use App\Filament\Resources\SmsPromos\Pages\EditSmsPromo;
 use App\Filament\Resources\SmsPromos\Pages\ListSmsPromos;
+use App\Filament\Resources\SmsPromos\Pages\ViewSmsPromo;
 use App\Filament\Resources\SmsPromos\Schemas\SmsPromoForm;
 use App\Filament\Resources\SmsPromos\Tables\SmsPromosTable;
 use App\Models\SmsPromo;
@@ -48,6 +49,7 @@ class SmsPromoResource extends Resource
             'index' => ListSmsPromos::route('/'),
             'create' => CreateSmsPromo::route('/create'),
             'edit' => EditSmsPromo::route('/{record}/edit'),
+            'view' => ViewSmsPromo::route('/{record}'),
         ];
     }
 }

@@ -363,7 +363,7 @@ window.pickupSelector = function (options) {
             return this.cartItems().reduce((total, item) => total + item.lineTotal, 0)
         },
         formatMoney(amount) {
-            return `$${toMoneyNumber(amount).toFixed(2)}`
+            return `ETB ${Math.round(toMoneyNumber(amount)).toLocaleString()}`
         },
         goToDetails() {
             if (this.cartItemCount() < 1) {
