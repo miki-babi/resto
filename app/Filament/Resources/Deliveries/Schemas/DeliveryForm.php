@@ -23,7 +23,7 @@ class DeliveryForm
                 Select::make('customer_id')
                     ->relationship('customer', 'name')
                     ->searchable()
-                    ->required(),
+                    ,
 
                 TextInput::make('delivery_phone')
                     ->tel()
@@ -54,7 +54,6 @@ class DeliveryForm
                         'paid' => 'Paid',
                         'failed' => 'Failed',
                     ])
-                    ->required()
                     ->default('unpaid'),
 
                 Repeater::make('items')

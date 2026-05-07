@@ -25,7 +25,7 @@ Route::get('/clear', function () {
     Artisan::call('view:clear');
 
     return redirect()->back();
-})->name('storage');
+})->name('clear');
 
 Route::get(PageResource::homeRoutePath(), [LandingController::class, 'home'])->name(PageResource::homeRouteName());
 Route::get('/menu', [LandingController::class, 'menu'])->name(PageResource::menuRouteName());

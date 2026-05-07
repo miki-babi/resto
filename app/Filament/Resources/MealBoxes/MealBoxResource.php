@@ -22,6 +22,8 @@ class MealBoxResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::ArchiveBox;
 
     protected static string|UnitEnum|null $navigationGroup = 'MealBox';
+    protected static bool $shouldRegisterNavigation = false;
+
 
     protected static ?string $recordTitleAttribute = 'mealbox';
 

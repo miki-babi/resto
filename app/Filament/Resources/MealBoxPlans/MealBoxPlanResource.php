@@ -24,6 +24,8 @@ class MealBoxPlanResource extends Resource
     protected static ?string $recordTitleAttribute = 'mealboxplan';
 
                     protected static string | UnitEnum | null $navigationGroup = 'MealBox';
+                    protected static bool $shouldRegisterNavigation = false;
+
 
 
     public static function form(Schema $schema): Schema

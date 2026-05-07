@@ -12,6 +12,9 @@
 
 [x-cloak] { display: none !important; }
 
+.fi-sidebar {
+    background-color: #fafafa;
+}
 @theme {
     --color-accent: #d77c30; /* Metro Red */
     --color-accent-strong: #b96928; /* Metro Dark */

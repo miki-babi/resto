@@ -15,7 +15,12 @@ class FeedbackTable extends TableWidget
     protected static ?int $sort = 4; // Stats firstprotected static ?int $sort = 2;
 
     protected int|string|array $columnSpan = 'full';
-
+  public static function canView(): bool
+    {
+        // The widget will only render if there is at least one record in the database
+        // return \App\Models\CateringRequest::exists();
+        return false;
+    }
     public function table(Table $table): Table
     {
         return $table

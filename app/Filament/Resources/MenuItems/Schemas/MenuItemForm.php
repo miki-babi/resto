@@ -34,13 +34,7 @@ class MenuItemForm
                     ->required()
                     ->minValue(0),
 
-                Toggle::make('is_available')
-                    ->default(true),
-
-                Toggle::make('preorder_available')
-                    ->default(false),
-
-                Toggle::make('is_featured'),
+                
 
                 TextInput::make('sort_order')
                     ->numeric()
@@ -58,6 +52,14 @@ class MenuItemForm
                         '4:3',
                         '1:1',
                     ]),
+
+                Toggle::make('is_available')
+                    ->default(true),
+
+                Toggle::make('preorder_available')
+                    ->default(false),
+
+                Toggle::make('is_featured'),
             ]);
     }
 }

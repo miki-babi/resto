@@ -31,10 +31,14 @@ class CustomersTable
                     ->searchable(),
                 TextColumn::make('telegram_user_id')
                     ->label('Telegram User ID')
-                    ->searchable(),
+                    ->searchable()
+                                        ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('telegram_username')
                     ->label('Telegram Username')
-                    ->searchable(),
+                    ->searchable()
+                                        ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('loyalty_points_balance')
                     ->label('Loyalty Points')
                     ->numeric()

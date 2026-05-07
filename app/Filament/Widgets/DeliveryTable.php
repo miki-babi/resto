@@ -2,38 +2,40 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\CateringRequest;
+use App\Models\Delivery;
 use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 
-class CateringRequestsTable extends TableWidget
+class DeliveryTable extends TableWidget
 {
-    protected static ?int $sort = 2;
+      protected static ?int $sort = 5;
 
     protected int|string|array $columnSpan = 'full';
-  public static function canView(): bool
-    {
-        // The widget will only render if there is at least one record in the database
-        // return \App\Models\CateringRequest::exists();
-        return false;
-    }
+
     public function table(Table $table): Table
     {
         return $table
-            ->query(fn (): Builder => CateringRequest::where('status', 'pending'))
+            ->query(fn (): Builder => Delivery::query())
             ->columns([
-                TextColumn::make('package.name')
-                    ->label('Package')
-                    ->searchable()
+                TextColumn::make('order_number')
+                    ->searchable(),
+                TextColumn::make('customer_id')
+                    ->numeric()
                     ->sortable(),
-                TextColumn::make('name')
+                TextColumn::make('delivery_phone')
                     ->searchable(),
-                TextColumn::make('contact')
-                    ->searchable(),
+                TextColumn::make('delivery_date')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('total_price')
+                    ->money()
+                    ->sortable(),
                 TextColumn::make('status')
+                    ->searchable(),
+                TextColumn::make('payment_status')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
